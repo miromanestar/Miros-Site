@@ -22,27 +22,28 @@ function onFirstLoad() {
 }
 
 function loadContent(selection, state, changeState) {
-    
     $('#page-content').fadeOut('fast', function () {
         $('#page-content').load(`${ window.location.origin }/pages/${ selection }`, function (response, status) {
             if (status === 'success') {
+                loadPartials(); //Check for partials every time the page is reloaded.
                 $('#page-content').fadeIn('fast');
             }
             if (status === 'error') {
                 loadContent('404'); //Possible infinite loop?
+                return;
             }
         });
     });
-
-    loadPartials(); //Check for partials every time the page is reloaded.
     
     if (typeof changeState === 'undefined' && changeState !== false) {
         if (selection === 'home') { //Instead of home having a /home.html url, display as base domain.
             if (window.location.pathname !== '/') {
                 window.history.pushState(state, '', '/');
+                $('base').attr('href', '/')
             }
         } else if (selection !== '404' && selection !== window.location.pathname.substr(1)) { //Maintain page url despite 404
             window.history.pushState(state, '', `/${selection}`);
+            $('base').attr('href', `${ location.origin }/pages/${ selection }`)
         }
     }
 
@@ -67,6 +68,3 @@ function loadPartials() {
         });
     });
 }
-
-function showLoader() {}
-function hideLoader() {}
