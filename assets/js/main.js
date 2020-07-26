@@ -22,11 +22,16 @@ function onFirstLoad() {
 }
 
 function loadContent(selection, state, changeState) {
-    $('#page-content').hide().load(`${ window.location.origin }/pages/${ selection }`, function (response, status) {
-        if (status === 'error') {
-            loadContent('404'); //Possible infinite loop?
-        }
-        $('#page-content').fadeIn('normal');
+    
+    $('#page-content').fadeOut('fast', function () {
+        $('#page-content').load(`${ window.location.origin }/pages/${ selection }`, function (response, status) {
+            if (status === 'success') {
+                $('#page-content').fadeIn('fast');
+            }
+            if (status === 'error') {
+                loadContent('404'); //Possible infinite loop?
+            }
+        });
     });
 
     loadPartials(); //Check for partials every time the page is reloaded.
@@ -62,3 +67,6 @@ function loadPartials() {
         });
     });
 }
+
+function showLoader() {}
+function hideLoader() {}
