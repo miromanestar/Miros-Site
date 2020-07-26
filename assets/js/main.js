@@ -22,7 +22,7 @@ function onFirstLoad() {
 }
 
 function loadContent(selection, state, changeState) {
-    $('#page-content').hide().load(`pages/${ selection }`, function (response, status) { 
+    $('#page-content').hide().load(`pages/${ selection }`, function (response, status) {
         if (status === 'error') {
             loadContent('404'); //Possible infinite loop?
         }
@@ -43,7 +43,8 @@ function loadContent(selection, state, changeState) {
 
     //Make header link active based on URL
     $('.nav-link').each(function (i) {
-        if ($(this).html().toLowerCase() === location.pathname.split('/')[1]) {
+        if ($(this).html().toLowerCase() === location.pathname.split('/')[1] || 
+            ( $(this).html().toLowerCase() === 'home' && location.pathname === '/')) { //Highlight if on home page
             $(this).addClass('active');
         } else {
             $(this).removeClass('active');

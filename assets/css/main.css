@@ -3,6 +3,7 @@
     --secondary-color: #252525;
     --tertiary-color: #1c1c1c;
     --kinda-white: #f5f5f5;
+    --background-color: #353ebd;
 }
 
 * {
@@ -60,6 +61,15 @@ header {
     transform: scale(1.1);
 }
 
+.white-filter {
+    filter: invert(100%) sepia(89%) saturate(0%) hue-rotate(355deg) brightness(106%) contrast(101%);
+}
+
+.header-icon {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
 .content {
     background-color: var(--tertiary-color);
 }
@@ -71,6 +81,14 @@ header {
 
     .logo {
         width: 75%;
+    }
+
+    .header-icons {
+        display: inherit;
+    }
+    
+    .header-icon {
+        height: 3em;
     }
 }
 
