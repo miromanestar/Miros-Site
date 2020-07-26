@@ -22,7 +22,7 @@ function onFirstLoad() {
 }
 
 function loadContent(selection, state, changeState) {
-    $('#page-content').hide().load(`pages/${ selection }`, function (response, status) {
+    $('#page-content').hide().load(`${ window.location.origin }/pages/${ selection }`, function (response, status) {
         if (status === 'error') {
             loadContent('404'); //Possible infinite loop?
         }
@@ -54,7 +54,7 @@ function loadContent(selection, state, changeState) {
 
 function loadPartials() {
     $('[partial]').each(function (i) {
-        $(this).load(`partials/${$(this).attr('partial')}`, function (response, status) {
+        $(this).load(`${ window.location.origin }/partials/${$(this).attr('partial')}`, function (response, status) {
             $(this).contents().unwrap();
             if (status === 'error') {
                 $(this).html(`Error loading partial: ${$(this).attr('partial')}`);
