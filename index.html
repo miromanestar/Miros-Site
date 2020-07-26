@@ -42,12 +42,16 @@
             <div class="collapse navbar-collapse" id="navigation">
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link" role="button" onclick="loadContent('home')">Home</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown"  aria-haspopup="true" role="button" onclick="loadContent('projects')">Projects</a>
+
+                    <!-- Dropdown -->
+                    <li class="nav-item">
+                        <a class="nav-link mr-0 d-inline-block" role="button" onclick="loadContent('projects')">Projects</a>
+                        <a class="nav-link dropdown-toggle dropdown-toggle-split d-inline-block ml-0" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false" role="button"></a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" role="button" onclick="loadContent('projects/ytgallery')">Youtube Gallery</a>
+                            <a class="dropdown-item text-muted" destination="projects/ytgallery" role="button" onclick="loadContent('projects/ytgallery')">Youtube Gallery</a>
                         </div>
                     </li>
+
                     <li class="nav-item"><a class="nav-link" role="button" onclick="loadContent('about')">About</a></li>
                     <li class="nav-item"><a class="nav-link" role="button" onclick="loadContent('contact')">Contact</a></li>
                 </ul>
@@ -65,15 +69,15 @@
 
     <footer class="footer">
         <div class="d-flex container">
-            <div class="copyright text-muted  w-100">
+            <div class="copyright text-muted w-100">
                 Copyright &copy; 
                 <script>
                     document.write(new Date().getFullYear())
                 </script>
                 Miro Manestar. All Rights Reserved.
             </div>
-            <div class="additional text-right text-muted w-100">
-                Gemacht mit einem Hauch von Wahnsinn!</br>Făcut cu un pic de nebunie!
+            <div class="additional text-muted">
+                Făcut cu un pic de nebunie!</br>Gemacht mit einem Hauch von Wahnsinn!
             </div>
         </div>
     </footer>

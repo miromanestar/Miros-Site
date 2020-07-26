@@ -48,9 +48,25 @@ function loadContent(selection, state, changeState) {
     }
 
     //Make header link active based on URL
-    $('.nav-link').each(function (i) {
-        if ($(this).html().toLowerCase() === location.pathname.split('/')[1] || 
-            ( $(this).html().toLowerCase() === 'home' && location.pathname === '/')) { //Highlight if on home page
+    $('.nav-link').each(function () {
+        if ($(this).html().toLowerCase() === location.pathname.split('/')[1] || ( $(this).html().toLowerCase() === 'home' && location.pathname === '/' )) { //Highlight if on home page
+            $(this).addClass('active');
+        } else {
+            $(this).removeClass('active');
+        }
+        //Activate dropdowns
+        if ($(this).hasClass('dropdown-toggle')) {
+            if (location.pathname.split('/').length > 2 && $(this).prev().hasClass('active')) {
+                $(this).addClass('active');
+            } else {
+                $(this).removeClass('active');
+            }
+        }
+    });
+
+    //Activate dropdown items
+    $('.dropdown-item').each(function () {
+        if ($(this).attr('destination') === location.pathname.substr(1)) {
             $(this).addClass('active');
         } else {
             $(this).removeClass('active');

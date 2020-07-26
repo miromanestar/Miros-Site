@@ -17,12 +17,12 @@ jQuery(document).ready(function () {
 
 window.addEventListener('resize', adjustColumns);
 
-var playlistId = "PL708E2FE711E7B3C3"; //Required.
+var playlistId = "PLOba6OKTJnLbDvwBBEwO1EaVsiICn8Svw"; //Required.
 var maxResults = "18"
 var searchEnabled = "true"
-var numColumns = "4"
+var numColumns = "3"
 
-var apiKey = 'AIzaSyAKW5JQF_DGzWSkp3Eb0ezNXiRKYcVMXsA'; //Set your API key.
+var apiKey = 'AIzaSyB5IPU3Im2elGLjwc9IRauOvrq-3CaLAK0'; //Set your API key.
 
 var cacheName = `ytgallery-${ playlistId }`;
 var cache = getCache(); //Will check if cache exists or not.
@@ -202,8 +202,8 @@ function renderItems(items) {
             <p class="ytgallery-video-duration">${ duration }<\/p>
         <\/div>
         <p class="ytgallery-video-title">${ title }<\/p>
-        <i class="far fa-clock" id="ytgallery-date-icon" aria-hidden="true"><\/i><p class="ytgallery-video-date">${ date }<\/p>
-        <p class="ytgallery-video-views">${ views }<\/p><i class="fa fa-eye" id="ytgallery-views-icon" aria-hidden="true"><\/i>
+        <i class="far fa-clock" id="ytgallery-date-icon" aria-hidden="true"><\/i><p class="ytgallery-video-date text-muted">${ date }<\/p>
+        <p class="ytgallery-video-views text-muted">${ views }<\/p><i class="fa fa-eye" id="ytgallery-views-icon" aria-hidden="true"><\/i>
     <\/a>
     `;
 
