@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    //Do nothing
+    stickyHeader();
 });
 
 window.addEventListener('popstate', function (e) {
@@ -25,7 +25,7 @@ function loadContent(selection, state, changeState) {
     $('#page-content').fadeOut('fast', function () {
         $('#page-content').load(`${ window.location.origin }/pages/${ selection }`, function (response, status) {
             if (status === 'success') {
-                loadPartials(); //Check for partials every time the page is reloaded.
+                loadPartials(insertLightbox); //Check for partials every time the page is reloaded, then finally run insertLightbox() when finished.
                 $('#page-content').fadeIn('fast');
             }
             if (status === 'error') {
@@ -43,7 +43,7 @@ function loadContent(selection, state, changeState) {
             }
         } else if (selection !== '404' && selection !== window.location.pathname.substr(1)) { //Maintain page url despite 404
             window.history.pushState(state, '', `/${selection}`);
-            $('base').attr('href', `${ location.origin }/pages/${ selection }`)
+            $('base').attr('href', `${ location.origin }`)
         }
     }
 
@@ -74,7 +74,7 @@ function loadContent(selection, state, changeState) {
     });
 }
 
-function loadPartials() {
+function loadPartials(callback) {
     $('[partial]').each(function (i) {
         $(this).load(`${ window.location.origin }/partials/${$(this).attr('partial')}`, function (response, status) {
             $(this).contents().unwrap();
@@ -82,5 +82,30 @@ function loadPartials() {
                 $(this).html(`Error loading partial: ${$(this).attr('partial')}`);
             }
         });
+    });
+    
+    callback();
+}
+
+//Sticky header
+function stickyHeader() {
+    $(window).scroll(function () {
+        if ($('.navigation').offset().top >= 5) {
+            $('.navigation').addClass('nav-bg');
+            $('header').addClass('divider-grey');
+        } else {
+            $('.navigation').removeClass('nav-bg');
+            $('header').removeClass('divider-grey');
+        }
+    });
+}
+
+//Code to easily insert lightbox functionality into images
+function insertLightbox() {
+    $('img').each(function () {
+        if (!$(this).hasClass('logo-image')) {
+            $(this).addClass('image');
+            $(this).wrap($('<a/>').attr({ 'href': $(this).attr('src'), 'data-fancybox': 'images', 'data-caption': $(this).attr('alt') }));
+        }
     });
 }
