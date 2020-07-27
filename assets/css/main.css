@@ -19,7 +19,7 @@ html {
 
 #wrapper {
     min-height: 100%;
-    padding-bottom: 60px;
+    padding-bottom: 100;
     position: relative;
 }
 
@@ -76,28 +76,6 @@ header {
     background-color: var(--tertiary-color);
 }
 
-@media only screen and (max-width: 768px) {
-    header {
-        padding: 0;
-    }
-
-    .logo {
-        width: 75%;
-    }
-
-    .header-icons {
-        display: inherit;
-    }
-    
-    .header-icon {
-        height: 3em;
-    }
-
-    .nav-item.show {
-        text-align: center;
-    }
-}
-
 header ul {
     position: relative;
     display: flex;
@@ -121,6 +99,15 @@ header ul li a {
 }
 
 .nav-link {
+    display: inline-block;
+}
+
+.nav-link.dropdown-toggle {
+    padding-left: 0;
+    margin-left: -5px;
+}
+
+.nav-link {
     transition: transform .1s;
 }
 
@@ -130,6 +117,10 @@ header ul li a {
 
 .nav-link:hover {
     transform: scale(1.1);
+}
+
+.nav-link.dropdown-toggle {
+    padding: 10px;
 }
 
 .dropdown-menu {
@@ -144,7 +135,7 @@ header ul li a {
 }
 
 .dropdown-item.active {
-    background-color: var(--tertiary-color);
+    background-color: var(--secondary-color);
     transform: scale(1.1);
     color: #fff !important;
 }
@@ -153,6 +144,57 @@ header ul li a {
     color: #fff !important;
     background-color: var(--tertiary-color);
     transform: scale(1.1);
+}
+
+@media only screen and (max-width: 768px) {
+    header {
+        padding: 0;
+    }
+
+    .logo {
+        width: 75%;
+    }
+
+    .header-icons {
+        display: inherit;
+    }
+    
+    .header-icon {
+        height: 3em;
+    }
+    .nav-item.show {
+        text-align: center;
+    }
+
+    .nav-item {
+        width: 100%;
+        align-items: center;
+        display: flex;
+    }
+
+    .nav-link {
+        margin-left: auto;
+        margin-right: 0;
+        left: 25.5px;
+    }
+
+    .nav-link:only-child {
+        align-self: center;
+        margin-right: auto;
+        margin-left: auto;
+        left: 0;
+    }
+
+    .nav-link.dropdown-toggle {
+        justify-content: flex-end;
+        margin-left: auto;
+        margin-right: 20px;
+        align-self: center;
+    }
+
+    .dropdown-menu.show {
+        width: 100%;
+    }
 }
 
 footer {

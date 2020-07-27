@@ -66,7 +66,7 @@ function loadContent(selection, state, changeState) {
 
     //Activate dropdown items
     $('.dropdown-item').each(function () {
-        if ($(this).attr('destination') === location.pathname.substr(1)) {
+        if ($(this).attr('onclick').split("'")[1] === location.pathname.substr(1)) {
             $(this).addClass('active');
         } else {
             $(this).removeClass('active');
