@@ -23,7 +23,8 @@ function onFirstLoad() {
 
 function loadContent(selection, state, changeState) {
     $('#page-content').fadeOut('fast', function () {
-        $('#page-content').load(`${ window.location.origin }/pages/${ selection }`, function (response, status) {
+        $('#page-content').load(`${window.location.origin}/pages/${selection}`, function (response, status) {
+            $('.navbar-collapse').collapse('hide');
             if (status === 'success') {
                 loadPartials(insertLightbox); //Check for partials every time the page is reloaded, then finally run insertLightbox() when finished.
                 $('#page-content').fadeIn('fast');
