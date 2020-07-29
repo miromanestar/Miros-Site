@@ -219,9 +219,9 @@ input:focus {
 }
 
 #ytgallery-load-icon {
-    border: 16px solid #f3f3f3;
+    border: 16px solid var(--tertiary-color);
     /* Light grey */
-    border-top: 16px solid #cd4c4c;
+    border-top: 16px solid var(--secondary-color);
     /* Blue */
     border-radius: 50%;
     width: 120px;
