@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 128 128"><title>Artboard 63</title><rect x="42" y="56" width="10" height="30"/><circle cx="47" cy="46" r="6"/><path d="M64,0a64,64,0,1,0,64,64A64,64,0,0,0,64,0ZM96,92a4,4,0,0,1-4,4H36a4,4,0,0,1-4-4V36a4,4,0,0,1,4-4H92a4,4,0,0,1,4,4Z"/><path d="M76,56c-5.52,0-10,2-10,7V56H56V86H66V70c0-1.66,1-7,5-7,2.76,0,5,1.34,5,3V86H86V66A10,10,0,0,0,76,56Z"/>
+	<metadata>
+		<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:dc="http://purl.org/dc/elements/1.1/">
+			<rdf:Description about="https://iconscout.com/legal#licenses" dc:title="yumminky-social-media-63" dc:description="yumminky-social-media-63" dc:publisher="Iconscout" dc:date="2017-05-12" dc:format="image/svg+xml" dc:language="en">
+				<dc:creator>
+					<rdf:Bag>
+						<rdf:li>Juraj Sedlák</rdf:li>
+					</rdf:Bag>
+				</dc:creator>
+			</rdf:Description>
+		</rdf:RDF>
+    </metadata></svg>
