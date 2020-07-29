@@ -233,7 +233,9 @@ function renderItems(items) {
     ytButtonStyling();
     adjustColumns();
 
-    $('html, body').animate({ scrollTop: $('#ytgallery-search').offset().top - $('header').height() - 20 }, 'slow');
+    if ($('.navigation').offset().top >= 200) {
+        $('html, body').animate({ scrollTop: $('#ytgallery-search').offset().top - $('header').height() - 20 }, 'slow');
+    }
 
     okayToPaginate = true;
 
