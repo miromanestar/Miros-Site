@@ -19,7 +19,6 @@
 
     <!-- External Stylesheets -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" SameSite="None">
 
     <!-- Internal Stylesheets -->
@@ -27,69 +26,70 @@
 </head>
 
 <body onload="onFirstLoad()">
-<div id="background"></div>
-<div id="wrapper">
+    <div id="background"></div>
+    <div id="wrapper">
 
-    <header class="navigation sticky-top">
-        <nav class="navbar navbar-expand-lg navbar-dark">
-            <a role="button" onclick="loadContent('home')" class="logo navbar-brand display-1"><img class="logo-image" src="assets/icons/favicon.png"></img></a>
-    
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" 
-             aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-    
-            <div class="collapse navbar-collapse" id="navigation">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" role="button" onclick="loadContent('home')">Home</a></li>
+        <header class="navigation sticky-top">
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <a role="button" onclick="loadContent('home')" class="logo navbar-brand display-1"><img class="logo-image" src="assets/icons/favicon.png"></img></a>
+        
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" 
+                aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+        
+                <div class="collapse navbar-collapse" id="navigation">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link" role="button" onclick="loadContent('home')">Home</a></li>
 
-                    <!-- Dropdown -->
-                    <li class="nav-item">
-                        <a class="nav-link" role="button" onclick="loadContent('projects')">Projects</a>
-                        <a class="nav-link dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false" role="button"></a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item text-muted" role="button" onclick="loadContent('projects/ytgallery')">Youtube Gallery</a>
-                        </div>
-                    </li>
+                        <!-- Dropdown -->
+                        <li class="nav-item">
+                            <a class="nav-link" role="button" onclick="loadContent('projects')">Projects</a>
+                            <a class="nav-link dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false" role="button"></a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item text-muted" role="button" onclick="loadContent('projects/raycalc')">Raycalc</a>
+                                <a class="dropdown-item text-muted" role="button" onclick="loadContent('projects/ytgallery')">Youtube Gallery</a>
+                            </div>
+                        </li>
 
-                    <li class="nav-item"><a class="nav-link" role="button" onclick="loadContent('about')">About</a></li>
-                    <li class="nav-item"><a class="nav-link" role="button" onclick="loadContent('contact')">Contact</a></li>
-                </ul>
-                <span class="header-icons ml-lg-auto text-center">
-                    <a href="mailto:miroimanestar@gmail.com" class="navbar-text ml-lg-auto text-center"><img class="logo-image white-filter header-icon" src="assets/icons/email.svg"></img></a>
-                    <a href="https://twitter.com/ManestarMiro" class="navbar-text ml-lg-auto text-center"><img class="logo-image white-filter header-icon" src="assets/icons/twitter.svg"></img></a>
-                    <a href="https://github.com/miromanestar" class="navbar-text ml-lg-auto text-center"><img class="logo-image white-filter header-icon" src="assets/icons/github.svg"></img></a>
-                </span>
+                        <li class="nav-item"><a class="nav-link" role="button" onclick="loadContent('about')">About</a></li>
+                        <li class="nav-item"><a class="nav-link" role="button" onclick="loadContent('contact')">Contact</a></li>
+                    </ul>
+                    <span class="header-icons ml-lg-auto text-center">
+                        <a href="mailto:miroimanestar@gmail.com" class="navbar-text ml-lg-auto text-center"><img class="logo-image white-filter header-icon" src="assets/icons/email.svg"></img></a>
+                        <a href="https://twitter.com/ManestarMiro" class="navbar-text ml-lg-auto text-center"><img class="logo-image white-filter header-icon" src="assets/icons/twitter.svg"></img></a>
+                        <a href="https://github.com/miromanestar" class="navbar-text ml-lg-auto text-center"><img class="logo-image white-filter header-icon" src="assets/icons/github.svg"></img></a>
+                    </span>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Page Content -->
+        <main role="main" class="container" id="page-content"></main>
+
+        <footer class="footer">
+            <div class="d-flex container">
+                <div class="copyright text-muted w-100">
+                    Copyright &copy; 
+                    <script>
+                        document.write(new Date().getFullYear())
+                    </script>
+                    Miro Manestar. All Rights Reserved.
+                </div>
+                <div class="additional text-muted">
+                    Făcut cu un pic de nebunie!</br>Gemacht mit einem Hauch von Wahnsinn!
+                </div>
             </div>
-        </nav>
-    </header>
+        </footer>
 
-    <!-- Page Content -->
-    <main role="main" class="container" id="page-content"></main>
+        <!-- External Scripts -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+        <script src="https://kit.fontawesome.com/11c9b56b5a.js"></script>
 
-    <footer class="footer">
-        <div class="d-flex container">
-            <div class="copyright text-muted w-100">
-                Copyright &copy; 
-                <script>
-                    document.write(new Date().getFullYear())
-                </script>
-                Miro Manestar. All Rights Reserved.
-            </div>
-            <div class="additional text-muted">
-                Făcut cu un pic de nebunie!</br>Gemacht mit einem Hauch von Wahnsinn!
-            </div>
-        </div>
-    </footer>
-
-     <!-- External Scripts -->
-     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-     <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
-     <script src="https://kit.fontawesome.com/11c9b56b5a.js" crossorigin="anonymous"></script>
-
-     <!-- Internal Scripts -->
-     <script src="assets/js/main.js"></script>
-</div>
+        <!-- Internal Scripts -->
+        <script src="assets/js/main.js"></script>
+    </div>
 </body>

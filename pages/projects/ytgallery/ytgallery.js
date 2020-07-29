@@ -22,7 +22,7 @@ var maxResults = "18"
 var searchEnabled = "true"
 var numColumns = "3"
 
-var apiKey = 'AIzaSyAKW5JQF_DGzWSkp3Eb0ezNXiRKYcVMXsA'; //Set your API key.
+var apiKey = 'AIzaSyB2IYvyPOF9RtkeiloPT056MGLpImZBDpU'; //Set your API key.
 
 var cacheName = `ytgallery-${ playlistId }`;
 var cache = getCache(); //Will check if cache exists or not.
@@ -202,8 +202,8 @@ function renderItems(items) {
             <p class="ytgallery-video-duration">${ duration }<\/p>
         <\/div>
         <p class="ytgallery-video-title">${ title }<\/p>
-        <i class="far fa-clock" id="ytgallery-date-icon" aria-hidden="true"><\/i><p class="ytgallery-video-date text-muted">${ date }<\/p>
-        <p class="ytgallery-video-views text-muted">${ views }<\/p><i class="fa fa-eye" id="ytgallery-views-icon" aria-hidden="true"><\/i>
+        <i class="far fa-clock" src="/pages/projects/ytgallery/icons/clock.svg" id="ytgallery-date-icon" aria-hidden="true"><\/i><p class="ytgallery-video-date text-muted">${ date }<\/p>
+        <p class="ytgallery-video-views text-muted">${ views }<\/p><i class="fa fa-eye" src="/pages/projects/ytgallery/icons/eye.svg" id="ytgallery-views-icon" aria-hidden="true"><\/i>
     <\/a>
     `;
 
@@ -347,11 +347,11 @@ function adjustColumns() {
 
     if (numColumns === "4" && width >= 1410) {
         $('.ytgallery-video-container').removeClass('col1 col2 col3').addClass('col4');
-    } else if (numColumns === "3" || width >= 1050) {
+    } else if (numColumns === "3" || width >= 1200) {
         $('.ytgallery-video-container').removeClass('col1 col2 col4').addClass('col3');
     }
     
-    if (numColumns === "2" || width < 1050) {
+    if (numColumns === "2" || width < 1200) {
         $('.ytgallery-video-container').removeClass('col1 col3 col4').addClass('col2');
     }
     

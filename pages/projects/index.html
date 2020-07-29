@@ -1,3 +1,31 @@
-<h1>This page will host an overview of my current projects!</h1>
+<h1 class="mb-5">My Projects</h1>
 
-<div partial="card.html"></div>
+<div class="card-deck">
+    <div role="button" onclick="loadContent('projects/raycalc')" class="card">
+        <img class="card-img-top no-lightbox" src="assets/images/radiation.jpg">
+        <div class="card-body">
+            <h5 class="card-title">RayCalc</h5>
+            <p class="card-text">A cross-platform radiation dosimetry app for emergency situations!</p>
+        </div>
+        <div class="card-footer text-right">
+            <span class="project-source">
+                <a href="https://github.com/miromanestar/RayCalc2"><img class="logo-image white-filter header-icon" style="width: 2em;" src="assets/icons/github.svg"></img></a>
+            </span>
+            <span class=" project-info-card text-muted">October 2019 - May 2020 <span class="badge badge-secondary">Finished</span></span>
+        </div>
+    </div>
+
+    <div role="button" onclick="loadContent('projects/ytgallery')" class="card">
+        <img class="card-img-top no-lightbox" src="assets/images/youtube-logo.jpg">
+        <div class="card-body">
+            <h5 class="card-title">Youtube Gallery</h5>
+            <p class="card-text">A youtube gallery which grabs playlist data and displays it in a nice, response format with lightbox.</p>
+        </div>
+        <div class="card-footer">
+            <span class="project-source">
+                <a href="https://github.com/miromanestar/jQuery-Youtube-Playlist-Gallery"><img class="logo-image white-filter header-icon" style="width: 2em;" src="assets/icons/github.svg"></img></a>
+            </span>
+            <span class=" project-info-card text-muted">April 2020 - Present <span class="badge badge-dark">Ongoing</span></span>
+        </div>
+    </div>
+</div>

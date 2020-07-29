@@ -103,7 +103,7 @@ function stickyHeader() {
 //Code to easily insert lightbox functionality into images
 function insertLightbox() {
     $('img').each(function () {
-        if (!$(this).hasClass('logo-image')) {
+        if (!$(this).hasClass('logo-image') && !$(this).hasClass('no-lightbox')) {
             $(this).addClass('image');
             $(this).wrap($('<a/>').attr({ 'href': $(this).attr('src'), 'data-fancybox': 'images', 'data-caption': $(this).attr('alt') }));
         }
