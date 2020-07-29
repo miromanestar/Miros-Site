@@ -159,6 +159,11 @@ header {
     transform: scale(1.1);
 }
 
+.btn:hover {
+    transition: .2s;
+    transform: scale(1.05);
+}
+
 .card {
     background-color: var(--secondary-color);
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
