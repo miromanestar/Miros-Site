@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    colorScheme();
     stickyHeader();
 });
 
@@ -109,4 +110,12 @@ function insertLightbox() {
             $(this).wrap($('<a/>').attr({ 'href': $(this).attr('src'), 'data-fancybox': 'images', 'data-caption': $(this).attr('alt') }));
         }
     });
+}
+
+function colorScheme() {
+
+    //Switch favicon if light mode, since default is dark mode
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        document.getElementById('favicon').setAttribute('href', 'assets/icons/mm-dark.webp');
+    }
 }
