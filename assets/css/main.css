@@ -293,6 +293,10 @@ footer .additional {
     width: 236.7px;
 }
 
+.text-image {
+    width: 40%;
+}
+
 @media only screen and (max-width: 1024px) {
     footer .container {
         flex-wrap: wrap;
@@ -306,6 +310,10 @@ footer .additional {
         text-align: center;
         align-self: center;
         justify-content: center;
+        width: 100%;
+    }
+
+    .text-image {
         width: 100%;
     }
 }
