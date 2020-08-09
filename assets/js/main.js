@@ -116,6 +116,6 @@ function colorScheme() {
 
     //Switch favicon if light mode, since default is dark mode
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-        document.getElementById('favicon').setAttribute('href', 'assets/icons/mm-dark.webp');
+        document.getElementById('favicon').setAttribute('href', 'assets/icons/mm-dark.png');
     }
 }
