@@ -321,3 +321,47 @@ footer .additional {
 .divider-grey {
     box-shadow: inset 0 -4px 0 var(--secondary-color);
 }
+
+/* To block the site for internet explorer users */
+.ie-block {
+    display: none;
+}
+
+.ie-block-content {
+    display: none;
+}
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+
+    #ie-block {
+        display: block;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        height: 100%;
+        z-index: 1000000000;
+        background-color: #1c1c1c;;
+    }
+
+    .ie-block-content {
+        display: block;
+        margin: 30px;
+        position: absolute;
+        top: 30%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    .ie-block-image {
+        transition: .2s;
+        height: 100px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .ie-block-image:hover {
+        transition: .2s;
+        transform: scale(1.1);
+    }
+}
