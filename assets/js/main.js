@@ -27,6 +27,7 @@ function loadContent(selection, state, changeState) {
         $('#page-content').load(`${window.location.origin}/pages/${selection}`, function (response, status) {
             $('.navbar-collapse').collapse('hide');
             if (status === 'success') {
+                insertBreadcrumbs(selection);
                 loadPartials(insertLightbox); //Check for partials every time the page is reloaded, then finally run insertLightbox() when finished.
                 $('#page-content').fadeIn('fast');
             }
@@ -74,6 +75,54 @@ function loadContent(selection, state, changeState) {
             $(this).removeClass('active');
         }
     });
+}
+
+function insertBreadcrumbs(selection) {
+    triangle = `<svg style="transform: rotate(90deg); font-size: .7em;" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-triangle-fill ml-2 mr-2 my-auto" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" d="M7.022 1.566a1.13 1.13 0 0 1 1.96 0l6.857 11.667c.457.778-.092 1.767-.98 1.767H1.144c-.889 0-1.437-.99-.98-1.767L7.022 1.566z"/>
+        </svg>`;
+
+    pathArr = selection.split('/');
+    breadcrumb = `<li class="breadcrumb-item active">Home</li>`;
+    if(selection != 'home' && pathArr.length > 0) {
+        breadcrumb = `<li class="breadcrumb-item"><a class="hover-scale" role="button" onclick="loadContent('home')">Home</a></li>`;
+        for(let i = 0; i < pathArr.length; i++) {
+            if(i == pathArr.length - 1) {
+                if($('#page-name').length) {
+                    breadcrumb += `${triangle} <li class="breadcrumb-item active">${ $('#page-name').text() }</li>`;
+                } else {
+                    breadcrumb += `${triangle} <li class="breadcrumb-item active">${ pathArr[i].charAt(0).toUpperCase() + pathArr[i].slice(1) }</li>`;
+                }
+            } else {
+                var pagename = '';
+                $.get(window.location.origin + '/pages/' + pathArr.slice(0, i + 1).join('/'), function(html) {
+                    for(let i = 0 ; i < $(html).length; i++) {
+                        if($(html)[i].id === 'page-name') {
+                            pagename = $(html)[i].innerText;
+                        }
+                    }
+                    if(pagename !== '') {
+                        $('.breadcrumb-item a')[i + 1].innerText = pagename;
+                    }
+                });
+
+                breadcrumb += `${triangle} 
+                    <li class="breadcrumb-item">
+                        <a role="button" class="hover-scale" onclick="loadContent('${ pathArr.slice(0, pathArr.length-1).join('/') }')">
+                            ${ pathArr[i].charAt(0).toUpperCase() + pathArr[i].slice(1) }
+                        </a>
+                    </li>`;
+            }
+        }
+    }
+
+    $('#page-content').prepend(`
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                ${ breadcrumb }
+            </ol>
+        </nav>
+    `);
 }
 
 function loadPartials(callback) {

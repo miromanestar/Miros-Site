@@ -29,6 +29,10 @@ body {
     background-color: var(--tertiary-color);
 }
 
+#page-name {
+    display: none;
+}
+
 @supports (-moz-appearance: none) {
     #wrapper {
         min-height: 100vh;
@@ -157,6 +161,20 @@ header {
 .dropdown-item:hover {
     color: #fff !important;
     background-color: var(--tertiary-color);
+    transform: scale(1.1);
+}
+
+.breadcrumb {
+    background-color: var(--tertiary-color);
+    font-size: 1.2em;
+    padding-left: 0;
+}
+
+.hover-scale {
+    transition: .2s;
+}
+
+.hover-scale:hover {
     transform: scale(1.1);
 }
 
