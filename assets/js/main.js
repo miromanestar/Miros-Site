@@ -94,15 +94,15 @@ function insertBreadcrumbs(selection) {
                     breadcrumb += `${triangle} <li class="breadcrumb-item active">${ pathArr[i].charAt(0).toUpperCase() + pathArr[i].slice(1) }</li>`;
                 }
             } else {
-                var pagename = '';
+                var pageName = '';
                 $.get(window.location.origin + '/pages/' + pathArr.slice(0, i + 1).join('/'), function(html) {
                     for(let i = 0 ; i < $(html).length; i++) {
                         if($(html)[i].id === 'page-name') {
-                            pagename = $(html)[i].innerText;
+                            pageName = $(html)[i].innerText;
                         }
                     }
-                    if(pagename !== '') {
-                        $('.breadcrumb-item a')[i + 1].innerText = pagename;
+                    if(pageName !== '') {
+                        $('.breadcrumb-item a')[i + 1].innerText = pageName;
                     }
                 });
 
@@ -138,10 +138,10 @@ function loadPartials(callback) {
     callback();
 }
 
-//Sticky header
+//Sticky header with a setTimeout to stop the header "bouncing" on size change during scroll
 function stickyHeader() {
     $(window).scroll(function () {
-        if ($('.navigation').offset().top >= 5) {
+        if ($('.navigation').offset().top >= 1) {
             $('.navigation').addClass('nav-bg');
             $('header').addClass('divider-grey');
         } else {
