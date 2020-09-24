@@ -159,6 +159,7 @@
     }
 }
 
+/*
 .btn {
     display: inline-block;
     text-align: center;
@@ -170,13 +171,15 @@
     overflow: hidden;
     border: none;
     background-color: #cd4e4e;
-    color: #fff
+    color: #fff;
 }
 
 .btn:hover {
     background-color: #b53333;
     color: #fff;
 }
+
+*/
 
 input {
     width: 100%;
@@ -192,6 +195,7 @@ input:focus {
     outline: none;
 }
 
+/*
 .disabled {
     background-color: #cf7474;
     cursor: default;
@@ -201,6 +205,7 @@ input:focus {
     background-color: #cf7474;
     cursor: default;
 }
+*/
 
 .col1 {
     width: 100%;

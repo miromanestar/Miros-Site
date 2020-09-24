@@ -22,7 +22,7 @@ var maxResults = "18"
 var searchEnabled = "true"
 var numColumns = "3"
 
-var apiKey = 'AIzaSyB2IYvyPOF9RtkeiloPT056MGLpImZBDpU'; //Set your API key.
+var apiKey = 'AIzaSyCHDRVRoFlKI4MNkZoo-DWwqsC1Tq0FJkU'; //Set your API key. //AIzaSyB2IYvyPOF9RtkeiloPT056MGLpImZBDpU
 
 var cacheName = `ytgallery-${ playlistId }`;
 var cache = getCache(); //Will check if cache exists or not.
