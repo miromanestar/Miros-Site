@@ -1,0 +1,39 @@
+<script src="pages/projects/archive/hmasonry/horizontal-masonry.js"></script>
+<link rel="stylesheet" href="pages/projects/archive/hmasonry/horizontal-masonry.css">
+
+<div id="page-name">Horizontal Masonry</div>
+
+<h2><a href="https://github.com/miromanestar/jQuery-Horizontal-Masonry"><img class="logo-image white-filter header-icon mr-3 ml-0" style="width: 1em;" src="assets/icons/github.svg"></img></a>Horizontal Masonry</h2>
+<h4 class="text-muted">A relatively simple solution for a quick js-based horizontal masonry layout!</h4>
+
+<h4 class="mt-5">What is this??</h4>
+
+<p class="mt-3" style="text-align: justify;">
+    An example of a horizontal masonry layout using jQuery! <br><br>
+    This example utilizes jQuery to make things easier, but everything here can also be done quite easily in vanilla JS!
+</p>
+
+<p class="mt-3"><a href="https://miromanestar.github.io/jQuery-Horizontal-Masonry/">Live demo here!</a></p>
+
+<p class="mt-3" style="text-align: justify;">
+    Essentially allows CSS to find the expected height of the items in a vertical masonry layout, sets that height 
+    (Plus an additional buffer to accomodate discrepancies) to the container, and applies some CSS flex rules depending on the window/screen size, 
+    including the flexbox order property.
+</p>
+
+<p class="mt-3" style="text-align: justify;">
+    That way, the JS is extremely lightweight and doesn't need to perform nearly as many calculations as traditional horizontal masonry layout solutions.
+</p>
+
+<p class="mt-3" style="text-align: justify;">
+    Support up to three columns. By default, it will organize the divs into 3 columns, and scale down as the screen shrinks. 
+    This will need to be modified in both the CSS and JS files to accomodate additional column sizes.
+</p>
+
+<p class="mt-3">
+    <a href="https://tobiasahlin.com/blog/masonry-with-css/" rel="nofollow">Some of the CSS critical to this solution came from this guide here.</a>
+</p>
+
+<h4 class="mt-5 mb-4">Embedded Example</h4>
+
+<div class="masonry"></div>

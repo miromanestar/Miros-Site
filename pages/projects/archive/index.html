@@ -1,2 +1,34 @@
 <h1 class="display-4">Welcome to the project archive!</h1>
-<h4>There are currently no archived projects!</h4>
+
+<div class="card-deck mt-5">
+    <div role="button" onclick="loadContent('projects/archive/hmasonry')" class="card">
+        <img class="card-img-top no-lightbox" src="assets/images/masonry.jpg">
+        <div class="card-body">
+            <h5 class="card-title">Horizontal Masonry</h5>
+            <p class="card-text">A simple solution for a horizontal masonry layout using jQuery!</p>
+        </div>
+        <div class="card-footer text-right">
+            <span class="project-source">
+                <a href="https://github.com/miromanestar/jQuery-Horizontal-Masonry"><img class="logo-image white-filter header-icon" style="width: 2em;" src="assets/icons/github.svg"></img></a>
+            </span>
+            <span class=" project-info-card text-muted">March 11, 2020 <span class="badge badge-secondary">Finished</span></span>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        max-width: 350px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    iframe {
+        height: 700px;
+
+        @media only screen and (max-width: 768px) {
+            height: 100%;
+            overflow: hidden;
+        }
+    }
+</style>

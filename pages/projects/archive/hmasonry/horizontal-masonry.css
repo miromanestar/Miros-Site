@@ -1,0 +1,50 @@
+.masonry {
+    column-gap: 1.5em;
+  }
+  
+  .masonry::before, .masonry::after {
+    content: "";
+    flex-basis: 100%;
+    width: 0;
+    order: 2;
+  }
+  
+  .masonry-div {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 10px 0;
+    width: 100%;
+    display: inline-block;
+    text-align: center;
+    font-size: 50px;
+    background-color: var(--secondary-color);
+  }
+  
+  @media only screen and (max-width: 1023px) and (min-width: 769px) {
+    .masonry {
+      column-count: 2;
+    }
+    
+    .masonry-div:nth-child(2n+1) { order: 1; }
+    .masonry-div:nth-child(2n+2) { order: 2; }
+  }
+  
+  @media only screen and (min-width: 1024px) {
+    .masonry {
+      column-count: 3;
+    }
+    
+    .masonry-div:nth-child(3n+1) { order: 1; }
+    .masonry-div:nth-child(3n+2) { order: 2; }
+    .masonry-div:nth-child(3n)   { order: 3; }
+  }
+  
+  #masonry-div-0 { height: 350px; line-height: 350px; }
+  #masonry-div-1 { height: 330px; line-height: 350px; }
+  #masonry-div-2 { height: 290px; line-height: 290px; }
+  #masonry-div-3 { height: 220px; line-height: 220px; }
+  #masonry-div-4 { height: 300px; line-height: 300px; }
+  #masonry-div-5 { height: 150px; line-height: 150px; }
+  #masonry-div-6 { height: 130px; line-height: 130px; }
+  #masonry-div-7 { height: 250px; line-height: 250px; }
+  #masonry-div-8 { height: 250px; line-height: 250px; }
+  #masonry-div-9 { height: 350px; line-height: 350px; }
