@@ -39,8 +39,8 @@ body {
     }
 }
 
-nav {
-    margin: 40px;
+.navbar {
+    margin: 40px 0;
 }
 
 header {
@@ -50,6 +50,7 @@ header {
     width: 100%;
     padding: 00 55px;
     z-index: 100000;
+    transition: box-shadow .2s;
 }
 
 .logo {
@@ -64,11 +65,11 @@ header {
 }
 
 .logo .logo-image {
-    width: 1.7em;
+    width: 2em;
 }
 
 .logo-image {
-    width: 2.5em;
+    width: 3em;
     transition: .2s;
 }
 
