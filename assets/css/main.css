@@ -39,12 +39,16 @@ body {
     }
 }
 
+nav {
+    margin: 40px;
+}
+
 header {
     position: relative;
     top: 0;
     left: 0;
     width: 100%;
-    padding: 40px 100px;
+    padding: 00 55px;
     z-index: 100000;
 }
 
@@ -59,8 +63,12 @@ header {
     white-space: normal;
 }
 
+.logo .logo-image {
+    width: 1.7em;
+}
+
 .logo-image {
-    width: 3em;
+    width: 2.5em;
     transition: .2s;
 }
 
@@ -109,7 +117,6 @@ header {
 }
 
 .nav-bg {
-    padding: 0 100px;
     transition: padding .5s;
 }
 
