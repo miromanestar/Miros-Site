@@ -230,11 +230,7 @@ header {
         transition: .2s;
     }
 
-    .nav-bg .navbar-toggler {
-        margin-right: 10px;
-    }
-
-    .nav-bg .logo-image {
+    .logo-image {
         width: 2em;
         transition: .2s;
     }
