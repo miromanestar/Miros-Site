@@ -141,7 +141,7 @@ function loadPartials(callback) {
 //Sticky header with a setTimeout to stop the header "bouncing" on size change during scroll
 function stickyHeader() {
     $(window).scroll(function () {
-        if ($('.navigation').offset().top >= 1) {
+        if ($('.navigation').offset().top >= 50) {
             $('.navigation').addClass('nav-bg');
             $('header').addClass('divider-grey');
         } else {
