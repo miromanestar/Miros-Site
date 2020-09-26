@@ -208,6 +208,7 @@ header {
 @media only screen and (max-width: 768px) {
     header {
         padding: 0;
+        margin: 20 0;
     }
 
     .logo {
@@ -231,7 +232,7 @@ header {
     }
 
     .logo-image {
-        width: 2em;
+        width: 1.5em;
         transition: .2s;
     }
 
