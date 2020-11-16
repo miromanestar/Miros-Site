@@ -214,7 +214,7 @@ header {
     align-items: center;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 990px) {
     header {
         padding: 0;
         margin: 20 0;
@@ -241,7 +241,6 @@ header {
     }
 
     .logo-image {
-        width: 1.5em;
         transition: .2s;
     }
 
