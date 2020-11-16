@@ -10,25 +10,21 @@ function createMaze(rows, columns) {
     fixDPI(c);
 
     ctx.strokeStyle = '#fff';
+    ctx.fillStyle = '#fff';
     ctx.lineWidth = 10;
 
     let width = c.width/columns;
     let height = c.height/rows;
 
     //Draw maze as a grid
-    ctx.strokeRect(0, 0, width, height);
     for (let r = 0; r < rows; r++) {
         for (let c = 0; c < columns; c++) {
             ctx.strokeRect(c * width, r * height, width, height);
-            ctx.font = '30px Arial';
-            ctx.fillStyle = 'white';
-            ctx.fillText(r * columns + c, c * width + width/2, r * height + height/2);
         }
     }
-
-    ctx.strokeStyle = '#FF0000';    
-    ctx.strokeRect(0, ctx.lineWidth, ctx.lineWidth, height - ctx.lineWidth * 2);
-    ctx.strokeRect(columns * width, height * (rows - 1), ctx.lineWidth, height - ctx.lineWidth * 2);
+    ctx.strokeStyle = '#FF0000';
+    drawLine(0, 0, 1, height); 
+    drawLine(columns * width, (rows - 1) * height, columns * width, rows * height);
     //ctx.strokeRect()
 
     let set = new DisjointSet(rows * columns);
@@ -60,10 +56,10 @@ function createMaze(rows, columns) {
             set.union(i0, i1);
             
             switch (dir) {
-                case 0: ctx.strokeRect(x , y, x + width, ctx.lineWidth); break; 
-                case 1: ctx.strokeRect(x, y, ctx.lineWidth, y - height); break;
-                //case 2: ctx.strokeRect(x , y, x - width, ctx.lineWidth); break;
-                case 3: ctx.strokeRect(x, y, ctx.lineWidth, y + height); break;
+                case 0: 
+                case 1:
+                case 2:
+                case 3:
             }
         }
     }
@@ -76,12 +72,11 @@ function getIndex(c, r) {
     return r * 4 + c; //20 is columns
 }
 
-//Clear a wall vertically, but don't remove the last parts of the wall that are part of other walls
-function clearWall(x0, y0, x1, y1) {
-    if (x0 === x1)
-        ctx.strokeRect(x0 + ctx.lineWidth, y0, x1 - ctx.lineWidth, ctx.lineWidth);
-    else if (y0 === y1)
-        ctx.strokeRect(x1, y1, ctx.lineWidth, y1);
+function drawLine(x0, y0, x1, y1) {
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1, y1);
+    ctx.stroke();
 }
 
 //Ensures that the resolution for the canvas is kept high even when scaling is done... credit linked here
@@ -95,7 +90,7 @@ function fixDPI() {
     c.setAttribute('width', styleWidth * dpi);
 }
 
-let DisjointSet = class {
+class DisjointSet {
     constructor(numElements) {
         this.numElements = numElements;
         this.set = Array(numElements);
