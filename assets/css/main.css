@@ -291,6 +291,15 @@ header {
         width: 100%;
         text-align: center;
     }
+
+    .card-deck .card {
+        flex-basis: auto;
+        flex-grow: 0;
+        flex-shrink: 1;
+        flex-direction: column;
+        width: 100%;
+        margin-bottom: 15px;
+    }
 }
 
 footer {
@@ -327,6 +336,7 @@ footer .additional {
     }
 
     footer .copyright {
+        justify-content: center;
         text-align: center;
     }
 
