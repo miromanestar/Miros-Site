@@ -105,16 +105,9 @@ var DisjointSet = class {
     }
 
     find(i) {
-        /*
         if (this.set[i] !== i)
             this.set[i] = this.find(this.set[i]);
-        return this.set[i];
-        */
-        while (this.set[i] !== i)
-            i = this.set[i];
-        return i;
-        
-        //console.error(`find(${i}) is out of bounds for DisjointSet with ${this.set.length} elements`);
+        return this.set[i];        
     }
 }
 
