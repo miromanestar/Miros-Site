@@ -1,8 +1,3 @@
-jQuery(document).ready(function() {
-    delete set;
-	createMaze(10, 20);
-});
-
 var c = document.getElementById('mazeCanvas');
 var ctx = c.getContext('2d');
 
