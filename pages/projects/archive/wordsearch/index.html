@@ -1,0 +1,23 @@
+<script src="pages/projects/archive/wordsearch/wordsearch.js"></script>
+<link rel="stylesheet" href="pages/projects/archive/wordsearch/wordsearch.css">
+<div id="page-name">Word Search</div>
+
+<h2>Word Search Generator</h2>
+<h4 class="text-muted">A javascript-based word search generator.</h4>
+
+<input id="maze-words" type="text" name="maze-words-input" placeholder="Separate your words with commas.">
+
+
+<div class="maze-sliders text-center">
+    <input type="range" min="10" max="50" value="20" class="slider" oninput="this.nextElementSibling.value = this.value" id="maze-rows" style="width: 40%;">
+    <output style="margin-right: 20px;">20</output>
+    <input type="range" min="10" max="50" value="20" class="slider" oninput="this.nextElementSibling.value = this.value" id="maze-columns" style="width: 40%;">
+    <output>20</output>
+</div>
+
+<div class="maze-btns text-center">
+    <button type="button" class="btn btn-dark mt-4 d-inline" onclick="drawWordSearch()">Generate</button>
+    <button type="button" class="btn btn-dark mt-4 d-inline" id="wordsearch-sol-btn" onclick="showSolution()">Show Solution</button>
+</div>
+
+<table id="wordsearch" class="table table-sm mt-5"></table>
