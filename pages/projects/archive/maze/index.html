@@ -4,6 +4,13 @@
 <h1 class="display-4">JavaScript Maze</h1>
 <h4 class="text-muted">A simple maze generator using HTML canvas and javascript.</h4>
 
-<button type="button" class="btn btn-dark mt-5 mx-auto d-block" onclick="createMaze(10, 20)">Generate Maze</button>
+<div class="maze-sliders text-center">
+    <input type="range" min="4" max="35" value="10" class="slider" oninput="this.nextElementSibling.value = this.value" id="maze-rows" style="width: 35%;">
+    <output style="margin-right: 20px;">10</output>
+    <input type="range" min="4" max="35" value="20" class="slider" oninput="this.nextElementSibling.value = this.value" id="maze-columns" style="width: 35%;">
+    <output>20</output>
+</div>
+
+<button type="button" class="btn btn-dark mt-5 mx-auto d-block" onclick="createMaze(Number(document.getElementById('maze-rows').value), Number(document.getElementById('maze-columns').value))">Generate Maze</button>
 
 <canvas id="mazeCanvas">The maze generator canvas.</canvas>
