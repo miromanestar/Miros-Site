@@ -2,3 +2,16 @@
     width: 100%;
     margin-top: 30px;
 }
+
+.slider-group {
+    width: 100%;
+}
+
+.slider {
+    width: 85%;
+}
+
+output {
+    vertical-align: text-bottom;
+}
+

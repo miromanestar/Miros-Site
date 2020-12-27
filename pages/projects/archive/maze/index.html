@@ -2,13 +2,24 @@
 <link rel="stylesheet" href="pages/projects/archive/maze/maze.css">
 
 <h1 class="display-4">JavaScript Maze</h1>
-<h4 class="text-muted">A simple maze generator using HTML canvas and javascript.</h4>
+<h5 class="text-muted">A simple maze generator using HTML canvas and javascript.</h5>
 
-<div class="maze-sliders text-center">
-    <input type="range" min="4" max="35" value="10" class="slider" oninput="this.nextElementSibling.value = this.value" id="maze-rows" style="width: 35%;">
-    <output style="margin-right: 20px;">10</output>
-    <input type="range" min="4" max="35" value="20" class="slider" oninput="this.nextElementSibling.value = this.value" id="maze-columns" style="width: 35%;">
-    <output>20</output>
+<div class="maze-sliders text-center row">
+    <div class="col form-group">
+        <label>Rows</label>
+        <div class="slider-group">
+            <input type="range" min="4" max="35" value="10" class="slider" oninput="this.nextElementSibling.value = this.value" id="maze-rows">
+            <output>10</output>
+        </div>
+    </div>
+
+    <div class="col form-group">
+        <label>Columns</label>
+        <div class="slider-group">
+            <input type="range" min="4" max="35" value="20" class="slider" oninput="this.nextElementSibling.value = this.value" id="maze-columns">
+            <output>20</output>
+        </div>
+    </div>
 </div>
 
 <button type="button" class="btn btn-dark mt-5 mx-auto d-block" onclick="createMaze(Number(document.getElementById('maze-rows').value), Number(document.getElementById('maze-columns').value))">Generate Maze</button>

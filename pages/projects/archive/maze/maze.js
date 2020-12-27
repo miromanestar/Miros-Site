@@ -1,6 +1,7 @@
 var c = document.getElementById('mazeCanvas');
 var ctx = c.getContext('2d');
 
+var adj_list = [];
 function createMaze(rows, columns) {
     //Make the canvas look nice and sharp
     fixDPI(c);
@@ -17,6 +18,7 @@ function createMaze(rows, columns) {
         for (let c = 0; c < columns; c++) {
             ctx.strokeRect(c * width, r * height, width, height);
             //ctx.fillText(r * columns + c, c * width + width/2, r * height + height/2);
+            adj_list.push([]);
         }
     }
 
@@ -59,6 +61,7 @@ function createMaze(rows, columns) {
             //console.log(`x: ${x/width} y: ${y/height}\tdir: ${dir}\ni0: ${i0}\ti1: ${i1}\nFind: ${set.find(i0)} ${set.find(i1)}`);
             //console.log(JSON.parse(JSON.stringify(set.set)));
             set.union(i0, i1);
+            adj_list[i0].push(i1); adj_list[i1].push(i0);
 
             switch (dir) {
                 case 0: drawLine(x, y, x - width, y, 'red'); break; //Left
