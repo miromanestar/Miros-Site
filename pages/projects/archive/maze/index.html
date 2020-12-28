@@ -1,28 +1,33 @@
-<script src="pages/projects/archive/maze/layeredCanvas.js"></script>
 <script src="pages/projects/archive/maze/maze.js"></script>
 <link rel="stylesheet" href="pages/projects/archive/maze/maze.css">
 
 <h1 class="display-4">JavaScript Maze</h1>
 <h5 class="text-muted">A simple maze generator using HTML canvas and javascript.</h5>
 
-<div class="maze-sliders text-center row">
-    <div class="col form-group">
-        <label>Rows</label>
-        <div class="slider-group">
-            <input type="range" min="4" max="35" value="10" class="slider" oninput="this.nextElementSibling.value = this.value" id="maze-rows">
-            <output>10</output>
+<form id="maze-input-form" name="maze-form">
+    <div class="maze-sliders text-center row">
+        <div class="col form-group">
+            <label>Rows</label>
+            <div class="slider-group">
+                <input type="range" min="4" max="35" value="10" class="slider" oninput="this.nextElementSibling.value = this.value" id="maze-rows">
+                <output>10</output>
+            </div>
+        </div>
+    
+        <div class="col form-group">
+            <label>Columns</label>
+            <div class="slider-group">
+                <input type="range" min="4" max="35" value="20" class="slider" oninput="this.nextElementSibling.value = this.value" id="maze-columns">
+                <output>20</output>
+            </div>
         </div>
     </div>
-
-    <div class="col form-group">
-        <label>Columns</label>
-        <div class="slider-group">
-            <input type="range" min="4" max="35" value="20" class="slider" oninput="this.nextElementSibling.value = this.value" id="maze-columns">
-            <output>20</output>
-        </div>
+    
+    <div class="maze-btns text-center">
+        <button type="button" class="btn btn-dark mt-4 d-inline" onclick="createMaze(Number(document.getElementById('maze-rows').value), Number(document.getElementById('maze-columns').value));">Generate Maze</button>
+        <button id="maze-sol-btn" type="button" class="btn btn-dark mt-4 d-inline" onclick="return false;">Show Solution</button>
+        <button id="maze-sol-btn" type="button" class="btn btn-dark mt-4 d-inline" onclick="this.maze-form.reset(); resetMaze();">Reset</button>
     </div>
-</div>
-
-<button type="button" class="btn btn-dark mt-5 mx-auto d-block" onclick="createMaze(Number(document.getElementById('maze-rows').value), Number(document.getElementById('maze-columns').value))">Generate Maze</button>
+</form>
 
 <canvas id="mazeCanvas">The maze generator canvas.</canvas>

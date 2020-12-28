@@ -1,125 +1,125 @@
-var mazeCanvas;
-console.log('me')
+var c = document.getElementById('mazeCanvas');
+var ctx = c.getContext('2d');
 
 var adj_list = [];
+var sol = [];
+
 function createMaze(rows, columns) {
-    mazeCanvas = new layeredCanvas('mazeCanvas');
     adj_list = [];
+    sol = [];
+    $('#maze-sol-btn').text('Show Solution');
 
-    mazeCanvas.addLayer({
-        id: 'maze',
-        show: true,
-        render: function(c, ctx) {
-            //Make the canvas look nice and sharp
-            fixDPI(c);
+    //Make the canvas look nice and sharp
+    fixDPI(c);
 
-            ctx.strokeStyle = '#fff';
-            ctx.fillStyle = '#fff';
-            ctx.lineWidth = 4;
+    ctx.strokeStyle = '#fff';
+    ctx.fillStyle = '#fff';
+    ctx.lineWidth = 4;
 
-            let width = Math.floor(c.width/columns);
-            let height = Math.floor(c.height/rows);
+    let width = Math.floor(c.width/columns);
+    let height = Math.floor(c.height/rows);
 
-            //Draw maze as a grid
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < columns; c++) {
-                    ctx.strokeRect(c * width, r * height, width, height);
-                    //ctx.fillText(r * columns + c, c * width + width/2, r * height + height/2);
-                    adj_list.push([]);
-                }
-            }
-
-            //Tells canvas to make transparent the spaces upon which later strokes overlap on any already drawn stroke
-            ctx.globalCompositeOperation = 'destination-out';
-
-            //Clear an entrance and exit
-            drawLine(0, 0, 0, height, 'red', ctx);
-            drawLine(columns * width, (rows - 1) * height, columns * width, rows * height, 'red', ctx);
-
-            let set = new DisjointSet(rows * columns);
-            while (set.cardinality > 1) {
-                let x = Math.floor(Math.random() * (columns - 1) + 1) * width; //Range: 1 to columns - 1
-                let y = Math.floor(Math.random() * (rows - 1) + 1) * height; //Range: 1 to rows - 1
-                let dir = Math.floor(Math.random() * 4);
-
-                /*
-                    Gets coordinates of the top right corner of the two cells connected by the chosen wall
-                    which is then used to set i0 & i1, the indexes of the cell to check the disjoint set.
-                */
-                let r0, c0, r1, c1, i0, i1;
-                if (dir === 0) { //Left
-                    r0 = y - height; c0 = x - width;
-                    r1 = y; c1 = x - width;
-                } else if (dir === 1) { //Up
-                    r0 = y - height; c0 = x - width;
-                    r1 = y - height; c1 = x;
-                } else if (dir === 2) { //Right
-                    r0 = y - height; c0 = x;
-                    r1 = y; c1 = x;
-                } else if (dir === 3) { //Down
-                    r0 = y; c0 = x - width;
-                    r1 = y; c1 = x;
-                }
-
-                i0 = getIndex(Math.round(c0/width), Math.round(r0/height), columns);
-                i1 = getIndex(Math.round(c1/width), Math.round(r1/height), columns);
-                
-                if (set.find(i0) !== set.find(i1)) {
-                    //console.log(`x: ${x/width} y: ${y/height}\tdir: ${dir}\ni0: ${i0}\ti1: ${i1}\nFind: ${set.find(i0)} ${set.find(i1)}`);
-                    //console.log(JSON.parse(JSON.stringify(set.set)));
-                    set.union(i0, i1);
-                    adj_list[i0].push(i1); adj_list[i1].push(i0);
-
-                    switch (dir) {
-                        case 0: drawLine(x, y, x - width, y, 'red', ctx); break; //Left
-                        case 1: drawLine(x, y, x, y - height, 'red', ctx); break; //Up
-                        case 2: drawLine(x, y, x + width, y, 'red', ctx); break; //Right
-                        case 3: drawLine(x, y, x, y + height, 'red', ctx); break; //Down
-                    }
-                }
-            }
-
-            //Clean up gaps in walls
-            ctx.globalCompositeOperation = 'source-over';
-            ctx.strokeStyle = '#fff';
-            for (let r = 0; r <= rows; r++) {
-                for (let c = 0; c <= columns; c++) {
-                    ctx.strokeRect(c * width, r * height, ctx.lineWidth/8, ctx.lineWidth/8);
-                }
-            }
-
-            drawSolution(findSolution(), rows, columns);
+    //Draw maze as a grid
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < columns; c++) {
+            ctx.strokeRect(c * width, r * height, width, height);
+            //ctx.fillText(r * columns + c, c * width + width/2, r * height + height/2);
+            adj_list.push([]);
         }
-    });
+    }
 
-    mazeCanvas.render();
+    //Tells canvas to make transparent the spaces upon which later strokes overlap on any already drawn stroke
+    ctx.globalCompositeOperation = 'destination-out';
+
+    //Clear an entrance and exit
+    drawLine(0, 0, 0, height, 'red', ctx);
+    drawLine(columns * width, (rows - 1) * height, columns * width, rows * height, 'red', ctx);
+
+    let set = new DisjointSet(rows * columns);
+    while (set.cardinality > 1) {
+        let x = Math.floor(Math.random() * (columns - 1) + 1) * width; //Range: 1 to columns - 1
+        let y = Math.floor(Math.random() * (rows - 1) + 1) * height; //Range: 1 to rows - 1
+        let dir = Math.floor(Math.random() * 4);
+
+        /*
+            Gets coordinates of the top right corner of the two cells connected by the chosen wall
+            which is then used to set i0 & i1, the indexes of the cell to check the disjoint set.
+        */
+        let r0, c0, r1, c1, i0, i1;
+        if (dir === 0) { //Left
+            r0 = y - height; c0 = x - width;
+            r1 = y; c1 = x - width;
+        } else if (dir === 1) { //Up
+            r0 = y - height; c0 = x - width;
+            r1 = y - height; c1 = x;
+        } else if (dir === 2) { //Right
+            r0 = y - height; c0 = x;
+            r1 = y; c1 = x;
+        } else if (dir === 3) { //Down
+            r0 = y; c0 = x - width;
+            r1 = y; c1 = x;
+        }
+
+        i0 = getIndex(Math.round(c0/width), Math.round(r0/height), columns);
+        i1 = getIndex(Math.round(c1/width), Math.round(r1/height), columns);
+        
+        if (set.find(i0) !== set.find(i1)) {
+            //console.log(`x: ${x/width} y: ${y/height}\tdir: ${dir}\ni0: ${i0}\ti1: ${i1}\nFind: ${set.find(i0)} ${set.find(i1)}`);
+            //console.log(JSON.parse(JSON.stringify(set.set)));
+            set.union(i0, i1);
+            adj_list[i0].push(i1); adj_list[i1].push(i0);
+
+            switch (dir) {
+                case 0: drawLine(x, y, x - width, y, 'red', ctx); break; //Left
+                case 1: drawLine(x, y, x, y - height, 'red', ctx); break; //Up
+                case 2: drawLine(x, y, x + width, y, 'red', ctx); break; //Right
+                case 3: drawLine(x, y, x, y + height, 'red', ctx); break; //Down
+            }
+        }
+    }
+
+    //Clean up gaps in walls
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.strokeStyle = '#fff';
+    for (let r = 0; r <= rows; r++) {
+        for (let c = 0; c <= columns; c++) {
+            ctx.strokeRect(c * width, r * height, ctx.lineWidth/8, ctx.lineWidth/8);
+        }
+    }
+
+    sol = findSolution();
+    $('#maze-sol-btn').attr('onclick', `drawSolution(${ rows }, ${ columns })`);
 }
 
-function drawSolution(sol, rows, columns) {
-    mazeCanvas.addLayer({
-        id: 'solution',
-        show: true,
-        render: function(c, ctx) {
-            //Make the canvas look nice and sharp
-            fixDPI(c);
+function drawSolution(rows, columns) {
+    ctx.strokeStyle = 'red';
+    ctx.fillStyle = 'red';
+    ctx.lineWidth = 4;
 
-            ctx.strokeStyle = 'red';
-            ctx.fillStyle = 'red';
-            ctx.lineWidth = 4;
+    if ($('#maze-sol-btn').text() === 'Show Solution') {
+        $('#maze-sol-btn').text('Hide Solution');
+        $('#maze-sol-btn').attr('onclick', `drawSolution(${ rows }, ${ columns })`);
+        ctx.globalCompositeOperation = 'source-over';
+    } else {
+        $('#maze-sol-btn').text('Show Solution');
+        $('#maze-sol-btn').attr('onclick', `drawSolution(${ rows }, ${ columns })`);
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.lineWidth = 10;
+    }
 
-            let width = Math.floor(c.width/columns);
-            let height = Math.floor(c.height/rows);
+    let width = Math.floor(c.width/columns);
+    let height = Math.floor(c.height/rows);
 
-            for (let i = 1; i < sol.length; i++) {
-                let x0 = getColumn(sol[i], columns) * width + width/2;
-                let y0 = getRow(sol[i], columns) * height + height/2;
-                let x1 = getColumn(sol[i - 1], columns) * width + width/2;
-                let y1 = getRow(sol[i - 1], columns) * height + height/2;
+    for (let i = 1; i < sol.length; i++) {
+        let x0 = getColumn(sol[i], columns) * width + width/2;
+        let y0 = getRow(sol[i], columns) * height + height/2;
+        let x1 = getColumn(sol[i - 1], columns) * width + width/2;
+        let y1 = getRow(sol[i - 1], columns) * height + height/2;
 
-                drawLine(x0, y0, x1, y1, 'red', ctx);
-            }
-        }
-    });
+        drawLine(x0, y0, x1, y1, 'red', ctx);
+        ctx.strokeRect(x1, y1, ctx.lineWidth/8, ctx.lineWidth/8);
+        ctx.strokeRect(x0, y0, ctx.lineWidth/8, ctx.lineWidth/8);
+    }
 }
 
 //Uses an array as a queue which is super slow, but since the queue is relatively small anyway it shouldn't matter TOO much... I hope
@@ -188,6 +188,10 @@ function getRow(index, columns) {
 
 function getColumn(index, columns) {
     return Math.floor(index % columns);
+}
+
+function resetMaze() {
+    createMaze(Number(document.getElementById('maze-rows').value), Number(document.getElementById('maze-columns').value));
 }
 
 var DisjointSet = class {
