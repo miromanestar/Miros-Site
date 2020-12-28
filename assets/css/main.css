@@ -217,7 +217,13 @@ header {
 @media only screen and (max-width: 990px) {
     header {
         padding: 0;
-        margin: 20 0;
+        margin: 0;
+        margin-bottom: 0;
+    }
+
+    .navbar {
+        margin-bottom: 0;
+        margin-top: 0;
     }
 
     .logo {
@@ -240,13 +246,13 @@ header {
         transition: .2s;
     }
 
-    .logo-image {
+    .logo .logo-image {
         transition: .2s;
+        width: 1.6em;
     }
 
-    .nav-bg .navbar-collapse.show {
+    .navbar-collapse {
         padding: 10px;
-        padding-top: 15px;
     }
 
     .nav-item.show {
