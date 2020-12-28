@@ -30,6 +30,7 @@ function drawWordSearch() {
 
     //Write wordList to input for better feedback
     $('#maze-words').val(wordSearchPuzzle.wordList);
+    $('#wordsearch-sol-btn').attr('onclick', 'showSolution()');
 
     if ($('#wordsearch-sol-btn').text() === 'Hide Solution')
         $('#wordsearch-sol-btn').text('Show Solution');

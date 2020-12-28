@@ -5,19 +5,32 @@
 <h2>Word Search Generator</h2>
 <h4 class="text-muted">A javascript-based word search generator.</h4>
 
-<input id="maze-words" type="text" name="maze-words-input" placeholder="Separate your words with commas.">
+<form id="maze-input-form" name="maze-form" class="mt-4" onsubmit="drawWordSearch(); return false;">
+    <input id="maze-words" type="text" name="maze-words-input" placeholder="Separate your words with commas.">
 
-
-<div class="maze-sliders text-center">
-    <input type="range" min="10" max="50" value="20" class="slider" oninput="this.nextElementSibling.value = this.value" id="maze-rows" style="width: 35%;">
-    <output style="margin-right: 20px;">20</output>
-    <input type="range" min="10" max="50" value="20" class="slider" oninput="this.nextElementSibling.value = this.value" id="maze-columns" style="width: 35%;">
-    <output>20</output>
-</div>
-
-<div class="maze-btns text-center">
-    <button type="button" class="btn btn-dark mt-4 d-inline" onclick="drawWordSearch()">Generate</button>
-    <button type="button" class="btn btn-dark mt-4 d-inline" id="wordsearch-sol-btn" onclick="showSolution()">Show Solution</button>
-</div>
+    <div class="maze-sliders text-center row mt-3">
+        <div class="col form-group">
+            <label>Rows</label>
+            <div class="slider-group">
+                <input type="range" min="10" max="50" value="20" class="slider" oninput="this.nextElementSibling.value = this.value" id="maze-rows">
+                <output>20</output>
+            </div>
+        </div>
+    
+        <div class="col form-group">
+            <label>Columns</label>
+            <div class="slider-group">
+                <input type="range" min="10" max="50" value="20" class="slider" oninput="this.nextElementSibling.value = this.value" id="maze-columns">
+                <output>20</output>
+            </div>
+        </div>
+    </div>
+    
+    <div class="maze-btns text-center">
+        <button type="submit" class="btn btn-primary mt-4 d-inline">Generate</button>
+        <button type="button" class="btn btn-dark mt-4 d-inline" id="wordsearch-sol-btn" onclick="alert('You must first generate a word search before a solution can be displayed.');">Show Solution</button>
+        <button type="button" class="btn btn-dark mt-4 d-inline" onclick="this.form.reset(); drawWordSearch();">Reset</button>
+    </div>
+</form>
 
 <table id="wordsearch" class="table table-sm mt-5"></table>
