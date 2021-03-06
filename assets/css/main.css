@@ -149,30 +149,6 @@ header {
     padding: 10px;
 }
 
-.dropdown-menu {
-    background-color: var(--secondary-color);
-    padding: 10px;
-}
-
-.dropdown-item {
-    margin: 0;
-    width: auto;
-    margin-left: 10px;
-    margin-right: 10px;
-}
-
-.dropdown-item.active {
-    background-color: var(--secondary-color);
-    transform: scale(1.1);
-    color: #fff !important;
-}
-
-.dropdown-item:hover {
-    color: #fff !important;
-    background-color: var(--tertiary-color);
-    transform: scale(1.1);
-}
-
 .breadcrumb {
     background-color: var(--tertiary-color);
     font-size: 1.2em;
@@ -212,6 +188,62 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+/* Dropdown Stuff */
+
+.nav-link.dropdown-toggle {
+    padding-left: 0;
+    margin-left: -5px;
+    font-size: 1.6rem;
+    top: 5px;
+    padding: 10px;
+}
+
+.dropdown-menu {
+    background-color: var(--secondary-color);
+    padding: 10px;
+    left: initial;
+    top: initial;
+    opacity: 0;
+    visibility: hidden;
+    transform-origin: top;
+    animation-fill-mode: forwards;
+    transform: scale(0.9, 0.7) translateY(-20px); 
+    transition: all 80ms ease;
+    display: block;
+    width: 0;
+    height: 0;
+    margin: 0;
+}
+
+.dropdown-menu.show {
+    transform: scale(1, 1) translateY(0);  
+    opacity: 1;
+    visibility: visible;
+    width: initial;
+    height: initial;
+    margin: initial;
+  }
+
+.dropdown-item {
+    margin: 0;
+    width: auto;
+    margin-left: 10px;
+    margin-right: 10px;
+    transition: .2s;
+}
+
+.dropdown-item.active {
+    background-color: transparent;
+    transform: scale(1.1);
+    color: #fff !important;
+}
+
+.dropdown-item:hover {
+    color: #fff !important;
+    background-color: var(--tertiary-color);
+    transform: scale(1.1);
 }
 
 @media only screen and (max-width: 990px) {
@@ -259,47 +291,40 @@ header {
         padding: 10px;
     }
 
-    .nav-item.show {
-        text-align: center;
-        width: 100%;
-        display: block;
+    .nav-link {
+        margin: 0;
     }
 
     .nav-item {
-        width: 100%;
-        align-items: center;
+        position: relative;
         display: flex;
-    }
-
-    .nav-link {
-        margin-left: auto;
-        margin-right: 0;
-        left: 30px;
-    }
-
-    .nav-link:only-child {
-        align-self: center;
-        margin-right: auto;
-        margin-left: auto;
-        left: 0;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 100%;
     }
 
     .nav-link.dropdown-toggle {
-        justify-content: flex-end;
-        margin-left: auto;
-        margin-right: 20px;
-        align-self: center;
-        top: 0;
+        position: absolute;
+        right: 0;
+        top: 10px;
     }
 
-    .dropdown-toggle[aria-expanded="true"] {
-        float: right;
-        top: 6px;
+    .dropdown-menu {
+        width: 100%;
+        padding: 0;
     }
 
     .dropdown-menu.show {
-        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
         text-align: center;
+        padding: 10px;
+        flex: 0 0 100%;
+    }
+
+    .dropdown-item {
+        flex: 1;
+        padding: 5px;
     }
 
     .card-deck .card {
