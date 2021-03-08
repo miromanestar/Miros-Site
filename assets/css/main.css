@@ -323,8 +323,9 @@ header {
     }
 
     .dropdown-item {
-        flex: 1;
+        /*flex: 1; Makes dropdown items cluster together, nice looking but laggy */
         padding: 5px;
+        flex: 0 0 100%; /* Makes dropdown items stay on their own line, still nice but also not laggy */
     }
 
     .card-deck .card {
