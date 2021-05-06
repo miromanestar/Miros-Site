@@ -96,9 +96,9 @@ function insertBreadcrumbs(selection) {
             } else {
                 var pageName = '';
                 $.get(window.location.origin + '/pages/' + pathArr.slice(0, i + 1).join('/'), function(html) {
-                    for(let i = 0 ; i < $(html).length; i++) {
-                        if($(html)[i].id === 'page-name') {
-                            pageName = $(html)[i].innerText;
+                    for(let k = 0 ; k < $(html).length; k++) {
+                        if($(html)[k].id === 'page-name') {
+                            pageName = $(html)[k].innerText;
                         }
                     }
                     if(pageName !== '') {
