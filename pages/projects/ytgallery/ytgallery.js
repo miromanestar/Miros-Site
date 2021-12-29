@@ -1,431 +1,525 @@
 /*
-    Miro Manestar | June 6, 2020
+    Miro Manestar | December 28, 2021
     miroimanestar@gmail.com
-    A simple front-end script that grabs youtube videos and displays them in a gallery format!
+    A simple script to display youtube playlists in a gallery.
 */
-jQuery(document).ready(function () {
-    checkCache();
-    adjustColumns();
-    ytButtons();
 
-    var timer = null;
-    $('#ytgallery-search').keyup(function () {
-        clearTimeout(timer);
-        timer = setTimeout(search, 250);
-    });
-});
+class YTGallery {
+    constructor(id, key, el, opts = {}) {
+        //Set required parameters
+        this.playlistId = id
+        this.apiKey = key
+        this.elId = el
 
-window.addEventListener('resize', adjustColumns);
+        //Exit if the required parameters are left empty
+        if (!(id && key && el)) {
+            let errMsg = ''
 
-var playlistId = "PLOba6OKTJnLbDvwBBEwO1EaVsiICn8Svw"; //Required.
-var maxResults = "18"
-var searchEnabled = "true"
-var numColumns = "3"
-
-var apiKey = 'AIzaSyB2IYvyPOF9RtkeiloPT056MGLpImZBDpU'; //Set your API key.
-
-var cacheName = `ytgallery-${ playlistId }`;
-var cache = getCache(); //Will check if cache exists or not.
-var playlistInfo;
-
-var okayToPaginate = false;
-var currentPage = 1;
-var state; //Defines whether user is currently searching or not; used to synchronize behaviors.
-
-$('.ytgallery-buttons, #ytgallery-playlist-search, #ytgallery-refresh').hide();
-
-//If there is no cache or it is more than 1 day old, it will rebuild cache.
-function checkCache() {
-    if (playlistId === 'Error: No playlistID set.') {
-        $('.ytgallery-buttons, #ytgallery-search, .ytgallery-refresh, #ytgallery-load-icon').hide();
-        $('.ytgallery-noplaylistiderror').show();
-        return console.error(playlistId);
-    }
-    $('.ytgallery-error').hide();
-
-    if (!localStorage[cacheName]) { //Cache doesn't exist.
-        startRetrieval();
-        console.log(`Cache for \"${ cacheName }\" not found... building.`);
-    } else {
-        let currentTime = new Date().getTime();
-        if (currentTime - cache.time > 86400000) { //Cache is more than 1 day old.
-            startRetrieval();
-            console.log(`Cache for \"${ cacheName }\" is more than a day old... rebuilding.`);
-        } else {
-            renderItems(getPageData());
-            console.log(`Cache for \"${ cacheName }\" is less than a day old... keeping.`);
+            if (!id)
+               errMsg = 'No playlist ID set'
+            if (!key)
+                errMsg = 'No API key set'
+            if (!el)
+                errMsg = 'No container element ID set'
+            
+            this.handleError(errMsg, errMsg)
+            return
         }
+
+        //Optional parameters
+        this.numColumns = opts.numColumns || 3
+        this.maxResults = opts.maxResults || 5
+        this.searchEnabled = opts.searchEnabled || true
+        this.cacheLife = opts.cacheLife || 86400000
+
+        //Set state variables
+        this.cacheName = `ytgallery-${ this.playlistId }`
+        this.cache = localStorage[this.cacheName] ? JSON.parse(localStorage[this.cacheName]) : null
+        this.playlistInfo = this.cache ? this.cache.playlistInfo : this.getPlaylistInfo()
+        this.canPaginate = false
+        this.currentPage = 1
+        this.state = null
+        this.prevSearch = []
+
+        //SVG icons used the video containers
+        this.eye = '<svg class="ytgallery-meta-icon" xmlns="http://www.w3.org/2000/svg" width="1792" height="1792" viewBox="0 0 1792 1792"><path d="M1664 960q-152-236-381-353 61 104 61 225 0 185-131.5 316.5t-316.5 131.5-316.5-131.5-131.5-316.5q0-121 61-225-229 117-381 353 133 205 333.5 326.5t434.5 121.5 434.5-121.5 333.5-326.5zm-720-384q0-20-14-34t-34-14q-125 0-214.5 89.5t-89.5 214.5q0 20 14 34t34 14 34-14 14-34q0-86 61-147t147-61q20 0 34-14t14-34zm848 384q0 34-20 69-140 230-376.5 368.5t-499.5 138.5-499.5-139-376.5-368q-20-35-20-69t20-69q140-229 376.5-368t499.5-139 499.5 139 376.5 368q20 35 20 69z"/></svg>'
+        this.clock = '<svg class="ytgallery-meta-icon" xmlns="http://www.w3.org/2000/svg" width="1792" height="1792" viewBox="0 0 1792 1792"><path d="M1024 544v448q0 14-9 23t-23 9h-320q-14 0-23-9t-9-23v-64q0-14 9-23t23-9h224v-352q0-14 9-23t23-9h64q14 0 23 9t9 23zm416 352q0-148-73-273t-198-198-273-73-273 73-198 198-73 273 73 273 198 198 273 73 273-73 198-198 73-273zm224 0q0 209-103 385.5t-279.5 279.5-385.5 103-385.5-103-279.5-279.5-103-385.5 103-385.5 279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z"/></svg>'
+        
+        //Create elements
+        this.elems = { container: document.querySelector(`#${ this.elId }`) }
+        this.elems.container.onclick  = e => this.clickHandler(e)
+        
+        if (this.searchEnabled) {
+            this.insert('input', 'search')
+            let elem = this.elems.search
+            elem.classList.add('ytgallery-search')
+            elem.setAttribute('type', 'text')
+            elem.setAttribute('placeholder', 'Search...')
+
+            elem.oninput = e => this.search(e)
+        }
+
+        window.addEventListener('resize', e => this.styleColumns())
+
+        this.insert('div', 'gallery')
+        this.insert('div', 'loader')
+        this.createButtons()
+        this.checkCache()
     }
-}
 
-function getCache() {
-    if (localStorage[cacheName]) {
-        return JSON.parse(localStorage[cacheName]);
+    checkCache = () => {
+        if (!this.cache) {
+            this.getPlaylistData()
+            console.log(`Cache for \"${ this.cacheName }\" not found... building`)
+            return
+        }
+
+        const time = Date.now()
+        if (time - this.cache.time > this.cacheLife) {
+            this.getPlaylistData()
+            console.log(`Cache for \"${ this.cacheName }\" is more than a day old... building`)
+        } else {
+            this.renderItems(this.getPageData())
+            console.log(`Cache for \"${ this.cacheName }\" is les than a day old... using cache`)
+        }
+
     }
-}
 
-function startRetrieval() {
-    getPlaylistInfo();
-    getPlaylistItems();
-}
+    // ------ API FUNCTIONS ------
 
-//Only grabs the ids of each video from the playlist before passing them to buildCache().
-function getPlaylistItems(data, token) {
-    let playlistItems = data || [];
-    
-    $('.ytgallery-buttons, #ytgallery-search, .ytgallery-refresh').hide();
-    $('.ytgallery-error').hide();
+    getPlaylistData = async (data, token) => {
+        let videoIds = data || []
 
-    $.ajax({
-        type: 'GET',
-        url: 'https://www.googleapis.com/youtube/v3/playlistItems',
-        data: {
-            key: apiKey,
-            playlistId: playlistId,
+        let url = this.buildUrl('https://www.googleapis.com/youtube/v3/playlistItems', {
+            key: this.apiKey,
+            playlistId: this.playlistId,
             part: 'snippet',
             maxResults: 50,
-            pageToken: token
-        },
-        success: function (data) {
-            for (let item of data.items) {
-                if (item.snippet.title !== 'Private video') {
-                    playlistItems.push(item.snippet.resourceId.videoId);
-                } else {
-                    console.error(`Video with ID \"${ item.snippet.resourceId.videoId }\" is private... skipping.`);
-                }
-            }
+            pageToken: token || ''
+        })
 
-            if (data.nextPageToken) {
-                getPlaylistItems(playlistItems, data.nextPageToken);
-            } else {
-                buildCache(playlistItems);
-                console.log(`Playlist items successfully grabbed with ${ playlistItems.length } items... grabbing item data.`);
-            }
-        },
-        error: function (response) {
-            logAjaxError(response, 'getPlaylistItems()');
+        const res = await fetch(url).catch(error => {
+            this.handleError(error, 'An issue occured while attempting to retrieve data from youtube')
+            this.hide(this.elems.loader)
+        })
+
+        this.show(this.elems.loader)
+
+        data = await res.json()
+
+        if (data?.error) {
+            this.handleError(data.error, 'An issue occured while attempting to retrieve data from youtube.')
+            this.hide(this.elems.loader)
+            return
         }
-    });
-}
 
-/*
-    Grabs all necessary data for each video before placing it into an object.
-    Pagination is done by accessing the local cache data for a page rather
-    than making another request to youtube for it.
-*/
-function buildCache(playlistIds, data, iteration) {
-    let iterationNum = iteration + 1 || 1;
-    let ids = playlistIds.slice((iterationNum - 1) * maxResults, iterationNum * maxResults);
-    cache = data || ({ playlistInfo: playlistInfo, time: new Date().getTime(), numPages: 0, pages: [{ items: [] }] });
+        for (const item of data.items) {
+            if (item.snippet.title !== 'Private video')
+                videoIds.push(item.snippet.resourceId.videoId)
+            else
+                console.warn(`Video with ID \"${ item.snippet.resourceId.videoId }\" is private... skipping.`)
+        }
 
-    $.ajax({
-        type: 'GET',
-        url: 'https://www.googleapis.com/youtube/v3/videos',
-        data: {
-            key: apiKey,
+        if (data.nextPageToken) {
+            this.getPlaylistData(videoIds, data.nextPageToken)
+        } else {
+            console.log(`Playlist items successfully grabbed with ${ videoIds.length } items... grabbing item data.`);
+            this.buildCache(videoIds)
+        }
+    }
+
+    buildCache = async (videoIds, data, iteration = 0) => {
+        let i = iteration + 1
+        let ids = videoIds.slice((i - 1) * this.maxResults, i * this.maxResults)
+        this.cache = data || ({
+            playlistInfo: this.playlistInfo,
+            time: Date.now(),
+            numPages: 0,
+            pages: [[]]
+        })
+
+        let url = this.buildUrl('https://www.googleapis.com/youtube/v3/videos', {
+            key: this.apiKey,
             id: ids.toString(),
             part: 'snippet, contentDetails, statistics, recordingDetails, liveStreamingDetails',
             maxResults: 50
-        },
-        success: function (data) {
-            for (let item of data.items) {
-                if (item.snippet.title !== 'Private video') {
-                    cache.pages[iterationNum - 1].items.push({
-                        title: item.snippet.title,
-                        description: item.snippet.description,
-                        date: getDate(item), //Grabs 1 of three possible date sources.
-                        thumbnail: item.snippet.thumbnails.medium.url,
-                        duration: parseIsoToDuration(item.contentDetails.duration),
-                        views: numberWithCommas(item.statistics.viewCount),
-                        id: item.id
-                    });
-                    ytButtonStyling();
-                    cache.numPages = Math.ceil(playlistIds.length / maxResults);
-                    if (currentPage === iterationNum) { //If current page isn't loaded, load ASAP.
-                        renderItems(getPageData(currentPage - 1));
-                    }
-                } else {
-                    console.log(`Video with ID \"${ item.snippet.resourceId.videoId }\" is private... skipping.`)
-                }
-            }
-            
-            
-            if (iterationNum * maxResults < playlistIds.length + 1) {
-                cache.pages.push({ items: [] }); //Create empty page for next iteration.
-                buildCache(playlistIds, cache, iterationNum);
-                console.log(`Page ${ iterationNum } data has been retrieved.`);
-            } else {
-                localStorage.setItem(cacheName, JSON.stringify(cache)); //Save cache to storage once completed.
-                console.log(`Page ${ iterationNum } data has been retrieved.`);
-            }
-        },
-        error: function (response) {
-            logAjaxError(response, 'buildCache()');
-        }
-    });
-}
+        })
 
-/*
-    Retrives playlist info such as title, thumbnails, localized info, etc.
-*/
-function getPlaylistInfo() {
-     $.ajax({
-        type: 'GET',
-        url: 'https://www.googleapis.com/youtube/v3/playlists',
-        data: {
-            key: apiKey,
-            id: playlistId,
+        const res = await fetch(url).catch(error => {
+            this.handleError(error, 'An issue occured while attempting to retrieve data from youtube')
+        })
+
+        data = await res.json()
+
+        if (data?.error) {
+            this.handleError(data.error, 'An issue occured while attempting to retrieve data from youtube.')
+            this.hide(this.elems.loader)
+            return
+        }
+
+        for (const item of data.items) {
+            this.cache.pages[i - 1].push({
+                title: item.snippet.title,
+                description: item.snippet.description,
+                date: this.getDate(item), //Grabs 1 of three possible date sources.
+                thumbnail: item.snippet.thumbnails.medium.url,
+                duration: this.parseIsoToDuration(item.contentDetails.duration, item.snippet.liveBroadcastContent),
+                views: this.numberWithCommas(item.statistics.viewCount),
+                id: item.id
+            })
+            this.styleButtons()
+            this.cache.numPages = Math.ceil(videoIds.length / this.maxResults)
+
+            if (this.currentPage === i)
+                this.renderItems(this.getPageData(this.currentPage - 1))
+        }
+
+        if (i * this.maxResults < videoIds.length + 1) {
+            this.cache.pages.push([])
+            this.buildCache(videoIds, this.cache, i)
+        } else {
+            localStorage[this.cacheName] = JSON.stringify(this.cache)
+        }
+
+        console.log(`Page ${ i } data has been retrieved.`)
+    }
+
+    getPlaylistInfo = async () => {
+        let url = this.buildUrl('https://www.googleapis.com/youtube/v3/playlists', {
+            key: this.apiKey,
+            id: this.playlistId,
             part: 'snippet',
-        },
-        success: function (data) {
-           console.log('Successfully retrieved playlist info');
-           playlistInfo = ({ title: data.items[0].snippet.title,
-                             description: data.items[0].snippet.description,
-                             publishedAt: parseIsoToDate(data.items[0].snippet.publishedAt),
-                             channelTitle: data.items[0].snippet.channelTitle,
-                             channelId: data.items[0].snippet.channelId,
-                             thumbnails: data.items[0].snippet.thumbnails,
-                             localized: data.items[0].snippet.localized,
-                          });
-        },
-        error: function (response) {
-            logAjaxError(response, 'getPlaylistInfo()');
+        })
+
+        const res = await fetch(url).catch(error => {
+            this.handleError(error, 'An issue occured while attempting to retrieve data from youtube')
+        })
+
+        const data = await res.json()
+
+        if (data?.error) {
+            this.handleError(data.error, 'An issue occured while attempting to retrieve data from youtube.')
+            this.hide(this.elems.loader)
+            return
         }
-     });
-}
 
-function renderItems(items) {
-    const Item = ({ title, date, thumbnail, duration, views, id }) => `
-    <a class="ytgallery-video-container" data-fancybox href="https://www.youtube.com/watch?v=${ id }">
-        <div class= "ytgallery-thumbnail-container">
-            <img class="ytgallery-video-thumbnail" src="${ thumbnail }">
-            <p class="ytgallery-video-duration">${ duration }<\/p>
-        <\/div>
-        <p class="ytgallery-video-title">${ title }<\/p>
-        <i class="far fa-clock" src="/pages/projects/ytgallery/icons/clock.svg" id="ytgallery-date-icon" aria-hidden="true"><\/i><p class="ytgallery-video-date text-muted">${ date }<\/p>
-        <p class="ytgallery-video-views text-muted">${ views }<\/p><i class="fa fa-eye" src="/pages/projects/ytgallery/icons/eye.svg" id="ytgallery-views-icon" aria-hidden="true"><\/i>
-    <\/a>
-    `;
-
-    if (searchEnabled === 'true') {
-        $('#ytgallery-search').show();
-    } else {
-        $('#ytgallery-search').hide();
+        return data
     }
 
-    if (cache.numPages === 1) {
-        $('.ytgallery-buttons').hide();
-    } else {
-        $('.ytgallery-buttons').show();
+    // ------ RENDERING FUNCTIONS ------
+
+    renderItems = (items) => {
+        const item = ({ title, date, thumbnail, duration, views, id }) => `
+        <a class="ytgallery-video-container" data-fslightbox href="https://www.youtube.com/watch?v=${ id }">
+            <div class= "ytgallery-thumbnail-container">
+                <img class="ytgallery-video-thumbnail" src="${ thumbnail }" />
+                <p class="ytgallery-video-duration">${ duration }</p>
+            </div>
+            <p class="ytgallery-video-title">${ title }</p>
+            <div class="ytgallery-meta">
+                <div>${ this.clock }<p class="ytgallery-meta-info">${ date }</p></div>
+                <div>${ this.eye }<p class="ytgallery-meta-info">${ views }</p></div>
+            </div>
+        </a>
+        `;
+
+        this.elems.gallery.innerHTML = items.map(item).join('')
+        this.hide(this.elems.loader)
+
+        if (typeof refreshFsLightbox === 'function')
+            refreshFsLightbox()
+
+        if (this.searchEnabled)
+            this.show(this.elems.search)
+
+        this.styleButtons()
+        this.styleColumns()
+        this.okayToPaginate = true
+
+        const distance = window.scrollY - this.elems.container.offsetTop
+        if (distance >= 200)
+            this.elems.container.scrollIntoView({
+                behavior: 'smooth'
+            })
     }
 
-    if (state === 'search') {
-        $('.ytgallery-buttons').hide();
-    } else if (state === 'default' && cache.numPages > 1) {
-        $('.ytgallery-buttons').show();
+    insert = (el, name, parent) => {
+        let temp = document.createElement(el)
+        temp.classList.add(`ytgallery-${ name }`)
+        this.elems[name] = temp
+
+        if (!parent)
+            this.elems.container.appendChild(temp)
+        else
+            parent.appendChild(temp)
     }
 
-    $('.ytgallery-refresh').show();
-    $('#ytgallery-flexbox').html(items.map(Item).join(''));
-    $('#ytgallery-load-icon').hide();
-    $('.ytgallery-pagination-text').text(`Page ${ currentPage } of ${ cache.numPages }`);
+    createButtons = () => {
+        let nextTop = document.createElement('div')
+        nextTop.classList.add('ytgallery-btn')
+        nextTop.innerHTML = 'Next'
+        let backTop = nextTop.cloneNode()
+        backTop.innerHTML = 'Back'
+        let nextBottom = nextTop.cloneNode(true)
+        let backBottom = backTop.cloneNode(true)
 
-    ytButtonStyling();
-    adjustColumns();
+        let refresh = nextTop.cloneNode()
+        refresh.innerHTML = 'Refresh'
 
-    if ($('.navigation').offset().top >= 200) {
-        $('html, body').animate({ scrollTop: $('#ytgallery-search').offset().top - $('header').height() - 20 }, 'slow');
+        let top = document.createElement('div')
+        top.classList.add('ytgallery-buttons')
+        let bottom = top.cloneNode()
+        let refreshCont = top.cloneNode()
+
+        let infoTop = document.createElement('div')
+        infoTop.classList.add('ytgallery-info')
+        let infoBottom = infoTop.cloneNode()
+
+        top.appendChild(backTop)
+        top.appendChild(infoTop)
+        top.appendChild(nextTop)
+
+        bottom.appendChild(backBottom)
+        bottom.appendChild(infoBottom)
+        bottom.appendChild(nextBottom)
+
+        refreshCont.appendChild(refresh)
+        
+        this.elems.container.appendChild(refreshCont)
+
+        this.elems.gallery.before(top)
+        this.elems.gallery.after(bottom)
+
+        this.elems.topButtons = top
+        this.elems.bottomButtons = bottom
+
+        this.elems.nextTop = nextTop
+        this.elems.nextBottom = nextBottom
+        this.elems.backTop = backTop
+        this.elems.backBottom = backBottom
+
+        this.elems.refresh = refresh
+        
+        this.elems.infoTop = infoTop
+        this.elems.infoBottom = infoBottom
     }
 
-    okayToPaginate = true;
+    styleButtons = () => {
+        const page = this.currentPage
+        const pages = this.cache.numPages
 
-}
+        if (pages <= 1) {
+            this.hide(this.elems.topButtons)
+            this.hide(this.elems.bottomButtons)
+        } else {
+            this.show(this.elems.topButtons)
+            this.show(this.elems.bottomButtons)
+        }
 
-//Will only execute if the search returns less items than allowed by the maxResults variable.
-function search() {
-    let input = document.getElementById('ytgallery-search').value.toLowerCase();
+        if (page === 1) {
+            this.elems.backTop.classList.add('disabled')
+            this.elems.backBottom.classList.add('disabled')
+        } else {
+            this.elems.backTop.classList.remove('disabled')
+            this.elems.backBottom.classList.remove('disabled')
+        }
 
-    if (input !== '') {
-        let data = cache.pages;
-        let results = [];
+        if (page === pages) {
+            this.elems.nextTop.classList.add('disabled')
+            this.elems.nextBottom.classList.add('disabled')
+        } else {
+            this.elems.nextTop.classList.remove('disabled')
+            this.elems.nextBottom.classList.remove('disabled')
+        }
 
-        for (let page of data) {
-            for (let item of page.items) {
-                if (item.title.toLowerCase().includes(input) || item.date.toLowerCase().includes(input)) {
-                    results.push(item);
-                }
+        const pageText = `${ this.currentPage } of ${ this.cache.numPages }`
+        this.elems.infoTop.innerHTML = pageText
+        this.elems.infoBottom.innerHTML = pageText
+        this.show(this.elems.refresh)
+    }
+
+    styleColumns = () => {
+        const width = window.innerWidth
+
+        if (this.numColumns === '4' && width >= 1410)
+            this.setWidth('23%')
+        else if (this.numColumns === '3' || width >= 1050)
+            this.setWidth('31%')
+        
+        if (this.numColumns === '2' || width < 1050)
+            this.setWidth('48%')
+        if (this.numColumns === '1' || width <= 768)
+            this.setWidth('100%')
+    }
+
+    //Set the width of all video items
+    setWidth = (width) => {
+        if (!this.elems.gallery)
+            return
+
+        for (let child of this.elems.gallery.children)
+            child.style.width = width
+    }
+
+    hide = (el) => {
+        el.style.display = 'none'
+    }
+
+    show = (el) => {
+        el.style.display = ''
+    }
+
+    // ------ INPUT HANDLER FUNCTIONS ------
+    
+    paginate = (dir) => {
+        if (this.okayToPaginate) {
+            if (dir === 'Back' && this.currentPage === 1 || dir === 'Next' && this.currentPage === this.cache.numPages)
+                    return
+
+            this.okayToPaginate = false
+
+            if (dir === 'Back' && this.getPageData(this.currentPage - 2) || dir === 'Next' && this.getPageData(this.currentPage).length > 0) {
+                dir === 'Back' ? this.currentPage-- : this.currentPage++
+                this.renderItems(this.getPageData())
+            }
+        }
+    }
+
+    refresh = () => {
+        this.state = 'default'
+        this.currentPage = 1
+        this.elems.gallery.innerHTML = ''
+        this.hide(this.elems.topButtons)
+        this.hide(this.elems.bottomButtons)
+        this.hide(this.elems.refresh)
+        this.show(this.elems.loader)
+        this.getPlaylistData()
+    }
+
+    search = (e) => {
+        const val = e.target.value
+
+        if (val === '' && this.state ==='search') {
+            this.show(this.elems.loader)
+            this.state = 'default'
+            this.renderItems(this.getPageData())
+            return
+        }
+
+        let results = []
+        for (const page of this.cache.pages) {
+            for (const item of page) {
+                if (item.title.toLowerCase().includes(val) || item.date.toLowerCase().includes(val))
+                    results.push(item)
             }
         }
 
-        if (results.length < maxResults && results.length > 0) {
-            $('#yt_loader').show();
-            $('.yt_buttons').hide();
-
-            currentSearchPage = 1;
-            state = 'search';
-            numSearchResults = results.length;
-            renderItems(results);
+        if (results.length < this.maxResults && results.length > 0) {
+            this.show(this.elems.loader)
+            this.hide(this.elems.topButtons)
+            this.hide(this.elems.bottomButtons)
+            this.state = 'search'
+            this.renderItems(results)
         }
-    } else {
-        $("#yt_loader").show();
-        state = 'default';
-        renderItems(getPageData());
-    }  
-}
+    }
 
-function ytButtons() {
-    $('#ytgallery-back-top, #ytgallery-back-bottom').click(function () {
-        if (okayToPaginate && currentPage !== 1) { //If on first page, disable back button.
-            if (getPageData(currentPage - 2)) {
-                okayToPaginate = false;
-                currentPage--;
-
-                $('#ytgallery-buttons-bottom').hide();
-                $('ytgallery-load-icon').show();
-
-                renderItems(getPageData());
-            } else { //This shouldn't do anything, but it's there just in case something wonky happens.
-                okayToPaginate = false;
-                $('#ytgallery-flexbox').empty();
-                $('#ytgallery-buttons-bottom').hide();
-                $('#ytgallery-load-icon').show();
+    clickHandler = (e) => {
+        if (e.target.matches('.ytgallery-btn')) {
+            switch (e.target.innerHTML) {
+                case 'Next': this.paginate('Next'); break;
+                case 'Back': this.paginate('Back'); break;
+                case 'Refresh': this.refresh(); break;
+                default: break;
             }
         }
-    });
+    }
 
-    $('#ytgallery-next-top, #ytgallery-next-bottom').click(function () {
-        if (okayToPaginate && currentPage !== cache.numPages) { //If on last page, disable next button.
-            if (getPageData(currentPage).length > 0) { //Only run this method if the ajax request for page has completed.
-                okayToPaginate = false;
-                currentPage++;
+    // ------ UTILITY FUNCTIONS ------
 
-                $('#ytgallery-buttons-bottom').hide();
-                $('ytgallery-load-icon').show();
+    buildUrl = (link, opts) => {
+        let url = new URL(link)
+        url.search = new URLSearchParams(opts)
+        return url
+    }
 
-                renderItems(getPageData());
-            } else { //Just wait until the ajax request is completed; buildCache() will automatically render it.
-                currentPage++;
-                okayToPaginate = false;
-                $('#ytgallery-flexbox').empty();
-                $('#ytgallery-buttons-bottom').hide();
-                $('#ytgallery-load-icon').show();
-            }
+    getPageData = (index) => {
+        const pageRef = index || this.currentPage - 1
+        return this.cache.pages[pageRef]
+    }
+
+    /*
+        The recordingDate field can be manually set for each video, has highest precedence.
+        actualStartTime denotes when, if a video has been livestreamed, it began streaming.
+        publishedAt is the time at which the video was officially published.
+    */
+    getDate = (item) => {
+        if (item.recordingDetails && item.recordingDetails.recordingDate != null) {
+            return this.parseIsoToDate(item.recordingDetails.recordingDate)
+        } else if (item.liveStreamingDetails && item.liveStreamingDetails.actualStartTime != null) {
+            return this.parseIsoToDate(item.liveStreamingDetails.actualStartTime)
+        } else if (item.liveStreamingDetails && item.liveStreamingDetails.scheduledStartTime != null) {
+            return this.parseIsoToDate(item.liveStreamingDetails.scheduledStartTime)
+        } else {
+            return this.parseIsoToDate(item.snippet.publishedAt)
         }
-    });
-
-    $('#ytgallery-refresh-btn').click(function() { //Hide everything.
-        state = 'default';
-        currentPage = 1;
-        $('.ytgallery-refresh').hide();
-        $('#ytgallery-search').hide();
-        $('#ytgallery-search').val('');
-        $('#ytgallery-load-icon').show();
-        $('#ytgallery-flexbox').empty();
-        startRetrieval();
-    });
-}
-
-function ytButtonStyling() {
-    if (cache.numPages === 1) {
-        $('.ytgallery-buttons').hide();
-    }
-    
-    if (currentPage === 1) {
-        $('#ytgallery-back-top, #ytgallery-back-bottom').addClass('disabled');
-    } else {
-        $('#ytgallery-back-top, #ytgallery-back-bottom').removeClass('disabled');
     }
 
-    if (currentPage === cache.numPages) {
-        $('#ytgallery-next-top, #ytgallery-next-bottom').addClass('disabled');
-    } else {
-        $('#ytgallery-next-top, #ytgallery-next-bottom').removeClass('disabled');
-    }
-}
+    parseIsoToDate = (s) => {
+        const date = new Date(s)
+        const year = date.getFullYear()
+        const month = date.toLocaleString('default', { month: 'long' })
+        const day = date.getUTCDate()
 
-/*
-    The columns setting only specifies a max number of columns....
-    The columns will be automatically resized if the screen is too small.
-*/
-function adjustColumns() {
-    var width = window.innerWidth;
-
-    if (numColumns === "4" && width >= 1410) {
-        $('.ytgallery-video-container').removeClass('col1 col2 col3').addClass('col4');
-    } else if (numColumns === "3" || width >= 1200) {
-        $('.ytgallery-video-container').removeClass('col1 col2 col4').addClass('col3');
-    }
-    
-    if (numColumns === "2" || width < 1200) {
-        $('.ytgallery-video-container').removeClass('col1 col3 col4').addClass('col2');
-    }
-    
-    if (numColumns === "1" || width <= 768) {
-        $('.ytgallery-video-container').removeClass('col2 col3 col4').addClass('col1');
-    }
-}
-
-//A shortcut method for grabbing the correct page from the cache.
-function getPageData(page) {
-    pageRef = page || currentPage - 1;
-    return cache.pages[pageRef].items;
-}
-
-/*
-    The recordingDate field can be manually set for each video, has highest precedence.
-    actualStartTime denotes when, if a video has been livestreamed, it began streaming.
-    publishedAt is the time at which the video was officially published.
-*/
-function getDate(item) {
-    if (item.recordingDetails && item.recordingDetails.recordingDate != null) {
-        return parseIsoToDate(item.recordingDetails.recordingDate);
-    } else if (item.liveStreamingDetails && item.liveStreamingDetails.actualStartTime != null) {
-        return parseIsoToDate(item.liveStreamingDetails.actualStartTime);
-    } else {
-        return parseIsoToDate(item.snippet.publishedAt);
-    }
-}
-
-function logAjaxError(ajaxResponse, msg) {
-    let response = JSON.parse(ajaxResponse.responseText);
-    console.error(`${ msg } | Error ${ response.error.code }: ${ response.error.message }`);
-    
-    $('.ytgallery-ajaxerror').show();
-    $('#ytgallery-load-icon, .ytgallery-buttons, #ytgallery-search').hide();
-}
-
-function parseIsoToDate(s) {
-    date = new Date(s);
-    year = date.getFullYear();
-    month = date.toLocaleString('default', { month: 'long' });
-    day = date.getUTCDate();
-
-    return `${ month } ${ day }, ${ year }`;
-}
-
-function parseIsoToDuration(duration) {
-    if (duration === 'P0D') { //Occurs when a video is currently live and added to the playlist.
-        return 'LIVE';
+        return `${ month } ${ day }, ${ year }`
     }
 
-    var match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
-
-    match = match.slice(1).map(function(x) {
-        if (x != null) {
-            return x.replace(/\D/, '');
+    parseIsoToDuration = (duration, type) => {
+        switch (type) {
+            case 'live': return 'LIVE'
+            case 'upcoming': return 'UPCOMING'
+            default: break
         }
-    });
 
-    var hours = (parseInt(match[0]) || 0);
-    var minutes = (parseInt(match[1]) || 0);
-    if (minutes < 10 && minutes !== 0 && hours !== 0) { minutes = `0${ minutes }`; }
-    var seconds = (parseInt(match[2]) || 0);
-    if (seconds < 10) { seconds = `0${ seconds }`; }
+        var match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
 
-    //return hours * 3600 + minutes * 60 + seconds;
-    if (hours === 0) { return `${ minutes }:${ seconds }` } else { return `${ hours}:${ minutes }:${ seconds }`; }
-}
+        match = match.slice(1).map(function(x) {
+            if (x != null)
+                return x.replace(/\D/, '')
+        })
 
-function numberWithCommas(num) {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        let hours = (parseInt(match[0]) || 0)
+        let minutes = (parseInt(match[1]) || 0)
+        if (minutes < 10 && minutes !== 0 && hours !== 0) { minutes = `0${ minutes }` }
+        let seconds = (parseInt(match[2]) || 0)
+        if (seconds < 10) { seconds = `0${ seconds }` }
+
+        if (hours === 0)
+            return `${ minutes }:${ seconds }`
+        else
+            return `${ hours}:${ minutes }:${ seconds }`
+    }
+
+    numberWithCommas = (num) => {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    }
+
+    handleError = (error, msg) => {
+        console.error(error)
+
+        if (this.elems) {
+            this.elems.gallery.innerHTML = msg
+            this.hide(this.elems.bottomButtons)
+            this.hide(this.elems.topButtons)
+            this.show(this.elems.refresh)
+            
+            if (this.searchEnabled)
+                this.hide(this.elems.search)
+        } else if (this.elId) {
+            document.getElementById(this.elId).innerHTML = `
+            <div class="ytgallery-error">
+            ${ msg }
+            </div>
+            `
+        }
+    }
 }
